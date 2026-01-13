@@ -51,6 +51,7 @@ SAddons are:
    ## SavedVariables: MyAddon_Settings_Global
    ## SavedVariablesPerCharacter: MyAddon_Settings_Char
    ## AddonCompartmentFunc: MyAddon_Compartment_Func
+   ## IconTexture: Interface\Icons\boss_odunrunes_green
 
    Libs\LibSAdCore\LibSAdCore.lua
 
