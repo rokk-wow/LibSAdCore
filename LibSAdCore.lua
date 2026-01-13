@@ -389,10 +389,6 @@ do -- Initialization
             self:RegisterFunctions()
         end
 
-        if self.settings.main.logVersion then
-            self:info(self:L("core_versionPrefix") .. self.config.version)
-        end
-
         local returnValue = true
         callHook(self, "AfterInitialize", returnValue)
 
@@ -645,17 +641,6 @@ do -- Settings Panels
         local headerControls = {}
         local footerControls = {{
             type = "header",
-            name = "core_loggingHeader"
-        }, {
-            type = "checkbox",
-            name = "core_logVersion",
-            default = false
-        }, {
-            type = "checkbox",
-            name = "core_enableDebugging",
-            default = false
-        }, {
-            type = "header",
             name = "core_profile"
         }, {
             type = "checkbox",
@@ -682,6 +667,13 @@ do -- Settings Panels
             onClick = function()
                 self:ExportSettings()
             end
+        }, {
+            type = "header",
+            name = "core_debuggingHeader"
+        }, {
+            type = "checkbox",
+            name = "core_enableDebugging",
+            default = false
         }, {
             type = "description",
             name = "core_tagline"
@@ -1961,10 +1953,8 @@ do -- Localization
         core_SAdCore = "SAdCore",
         core_versionPrefix = "v",
         core_close = "Close",
-        core_loggingHeader = "Logging",
+        core_debuggingHeader = "Logging",
         core_profile = "Profile",
-        core_logVersion = "Log Version on Load",
-        core_logVersionTooltip = "Log the current version of the addon to the chat window on start up.",
         core_enableDebugging = "Enable Debugging",
         core_enableDebuggingTooltip = "Enable debug messages in the chat window.",
         core_useCharacterSettings = "Use Character-Specific Settings",
@@ -1999,10 +1989,8 @@ do -- Localization
         core_SAdCore = "SAdCore",
         core_versionPrefix = "v",
         core_close = "Cerrar",
-        core_loggingHeader = "Registro",
+        core_debuggingHeader = "Registro",
         core_profile = "Perfil",
-        core_logVersion = "Registrar Versión al Cargar",
-        core_logVersionTooltip = "Registrar la versión actual del addon en la ventana de chat al iniciar.",
         core_enableDebugging = "Habilitar Depuración",
         core_enableDebuggingTooltip = "Habilitar mensajes de depuración en la ventana de chat.",
         core_useCharacterSettings = "Usar Configuración Específica del Personaje",
@@ -2039,10 +2027,8 @@ do -- Localization
         core_SAdCore = "SAdCore",
         core_versionPrefix = "v",
         core_close = "Fechar",
-        core_loggingHeader = "Registro",
+        core_debuggingHeader = "Registro",
         core_profile = "Perfil",
-        core_logVersion = "Registrar Versão ao Carregar",
-        core_logVersionTooltip = "Registrar a versão atual do addon na janela de chat ao iniciar.",
         core_enableDebugging = "Habilitar Depuração",
         core_enableDebuggingTooltip = "Habilitar mensagens de depuração na janela de chat.",
         core_useCharacterSettings = "Usar Configurações Específicas do Personagem",
@@ -2077,10 +2063,8 @@ do -- Localization
         core_SAdCore = "SAdCore",
         core_versionPrefix = "v",
         core_close = "Fermer",
-        core_loggingHeader = "Journalisation",
+        core_debuggingHeader = "Journalisation",
         core_profile = "Profil",
-        core_logVersion = "Enregistrer la Version au Chargement",
-        core_logVersionTooltip = "Enregistrer la version actuelle de l'addon dans la fenêtre de chat au démarrage.",
         core_enableDebugging = "Activer le Débogage",
         core_enableDebuggingTooltip = "Activer les messages de débogage dans la fenêtre de chat.",
         core_useCharacterSettings = "Utiliser les Paramètres Spécifiques au Personnage",
@@ -2115,10 +2099,8 @@ do -- Localization
         core_SAdCore = "SAdCore",
         core_versionPrefix = "v",
         core_close = "Schließen",
-        core_loggingHeader = "Protokollierung",
+        core_debuggingHeader = "Protokollierung",
         core_profile = "Profil",
-        core_logVersion = "Version beim Laden protokollieren",
-        core_logVersionTooltip = "Die aktuelle Version des Addons beim Start im Chatfenster protokollieren.",
         core_enableDebugging = "Debugging aktivieren",
         core_enableDebuggingTooltip = "Debug-Nachrichten im Chatfenster aktivieren.",
         core_useCharacterSettings = "Charakterspezifische Einstellungen verwenden",
@@ -2153,10 +2135,8 @@ do -- Localization
         core_SAdCore = "SAdCore",
         core_versionPrefix = "v",
         core_close = "Закрыть",
-        core_loggingHeader = "Логирование",
+        core_debuggingHeader = "Логирование",
         core_profile = "Профиль",
-        core_logVersion = "Записывать версию при загрузке",
-        core_logVersionTooltip = "Выводить текущую версию аддона в чат при запуске.",
         core_enableDebugging = "Включить отладку",
         core_enableDebuggingTooltip = "Включить отладочные сообщения в окне чата.",
         core_useCharacterSettings = "Использовать настройки персонажа",
