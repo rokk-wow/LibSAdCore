@@ -675,7 +675,8 @@ do -- Settings Panels
             name = "core_enableDebugging",
             default = false
         }, {
-            type = "divider"
+            type = "divider",
+            paddingTop = 20
         }, {
             type = "description",
             name = "core_tagline"
