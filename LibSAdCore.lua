@@ -1914,12 +1914,18 @@ do -- Utility Functions
 
         self:debug("Addon name check passed")
 
-        if tostring(data.version) ~= tostring(self.config.version) or tostring(data.sadCoreVersion) ~=
-            tostring(self.sadCore.version) then
-            self:info(self:L("core_importVersionMismatch") .. " " .. self:L("core_imported") .. ": " ..
-                          tostring(data.version) .. "/" .. tostring(data.sadCoreVersion) .. ", " ..
-                          self:L("core_current") .. ": " .. tostring(self.config.version) .. "/" ..
-                          tostring(self.sadCore.version))
+        -- Check SAdCore version mismatch
+        if tostring(data.sadCoreVersion) ~= tostring(self.sadCore.version) then
+            self:info(self:L("core_importSadCoreVersionMismatch") .. " " .. self:L("core_installed") .. ": " ..
+                          tostring(self.sadCore.version) .. ", " .. self:L("core_importString") .. ": " ..
+                          tostring(data.sadCoreVersion) .. ". " .. self:L("core_dataMismatchWarning"))
+        end
+
+        -- Check addon version mismatch
+        if tostring(data.version) ~= tostring(self.config.version) then
+            self:info(self:L("core_importAddonVersionMismatch") .. " " .. self:L("core_installed") .. ": " ..
+                          tostring(self.config.version) .. ", " .. self:L("core_importString") .. ": " ..
+                          tostring(data.version) .. ". " .. self:L("core_dataMismatchWarning"))
         end
 
         if not data.settings or type(data.settings) ~= "table" then
@@ -1974,11 +1980,13 @@ do -- Localization
         core_importDecodeFailed = "Decode failed.",
         core_importDeserializeFailed = "Deserialize failed.",
         core_importInvalidData = "Invalid data structure.",
-        core_importWrongAddon = "Imported settings are for a different addon.",
-        core_importVersionMismatch = "Version mismatch.",
+        core_importWrongAddon = "Imported settings are for a different addon",
+        core_importSadCoreVersionMismatch = "SAdCore version mismatch.",
+        core_importAddonVersionMismatch = "Addon version mismatch.",
         core_importSuccess = "Settings imported successfully.",
-        core_imported = "Imported",
-        core_current = "Current",
+        core_installed = "Installed",
+        core_importString = "Import String",
+        core_dataMismatchWarning = "There may be data compatibility issues.",
         core_tagline = "Simple Addons—Bare minimum addons for bare minimum brains.",
         core_authorTitle = "Author",
         core_authorName = "Press CTRL + C to Copy",
@@ -2010,11 +2018,13 @@ do -- Localization
         core_importDecodeFailed = "Error al decodificar.",
         core_importDeserializeFailed = "Error al deserializar.",
         core_importInvalidData = "Estructura de datos inválida.",
-        core_importWrongAddon = "La configuración importada es para un addon diferente.",
-        core_importVersionMismatch = "Las versiones no coinciden.",
+        core_importWrongAddon = "La configuración importada es para un addon diferente",
+        core_importSadCoreVersionMismatch = "La versión de SAdCore no coincide.",
+        core_importAddonVersionMismatch = "La versión del addon no coincide.",
         core_importSuccess = "Configuración importada exitosamente.",
-        core_imported = "Importado",
-        core_current = "Actual",
+        core_installed = "Instalado",
+        core_importString = "Cadena de Importación",
+        core_dataMismatchWarning = "Puede haber problemas de compatibilidad de datos.",
         core_tagline = "Simple Addons—Addons mínimos para mentes mínimas.",
         core_authorTitle = "Autor",
         core_authorName = "Presiona CTRL + C para Copiar",
@@ -2048,11 +2058,13 @@ do -- Localization
         core_importDecodeFailed = "Falha na decodificação.",
         core_importDeserializeFailed = "Falha na desserialização.",
         core_importInvalidData = "Estrutura de dados inválida.",
-        core_importWrongAddon = "As configurações importadas são para um addon diferente.",
-        core_importVersionMismatch = "Incompatibilidade de versão.",
+        core_importWrongAddon = "As configurações importadas são para um addon diferente",
+        core_importSadCoreVersionMismatch = "Incompatibilidade de versão do SAdCore.",
+        core_importAddonVersionMismatch = "Incompatibilidade de versão do addon.",
         core_importSuccess = "Configurações importadas com sucesso.",
-        core_imported = "Importado",
-        core_current = "Atual",
+        core_installed = "Instalado",
+        core_importString = "String de Importação",
+        core_dataMismatchWarning = "Pode haver problemas de compatibilidade de dados.",
         core_tagline = "Simple Addons—Addons mínimos para mentes mínimas.",
         core_authorTitle = "Autor",
         core_authorName = "Pressione CTRL + C para Copiar",
@@ -2084,11 +2096,13 @@ do -- Localization
         core_importDecodeFailed = "Échec du décodage.",
         core_importDeserializeFailed = "Échec de la désérialisation.",
         core_importInvalidData = "Structure de données invalide.",
-        core_importWrongAddon = "Les paramètres importés sont pour un addon différent.",
-        core_importVersionMismatch = "Incompatibilité de version.",
+        core_importWrongAddon = "Les paramètres importés sont pour un addon différent",
+        core_importSadCoreVersionMismatch = "Incompatibilité de version de SAdCore.",
+        core_importAddonVersionMismatch = "Incompatibilité de version de l'addon.",
         core_importSuccess = "Paramètres importés avec succès.",
-        core_imported = "Importé",
-        core_current = "Actuel",
+        core_installed = "Installé",
+        core_importString = "Chaîne d'Importation",
+        core_dataMismatchWarning = "Il peut y avoir des problèmes de compatibilité des données.",
         core_tagline = "Simple Addons—Addons minimaux pour esprits minimaux.",
         core_authorTitle = "Auteur",
         core_authorName = "Appuyez sur CTRL + C pour Copier",
@@ -2120,11 +2134,13 @@ do -- Localization
         core_importDecodeFailed = "Dekodierung fehlgeschlagen.",
         core_importDeserializeFailed = "Deserialisierung fehlgeschlagen.",
         core_importInvalidData = "Ungültige Datenstruktur.",
-        core_importWrongAddon = "Die importierten Einstellungen sind für ein anderes Addon.",
-        core_importVersionMismatch = "Versionskonflikt.",
+        core_importWrongAddon = "Die importierten Einstellungen sind für ein anderes Addon",
+        core_importSadCoreVersionMismatch = "SAdCore-Versionskonflikt.",
+        core_importAddonVersionMismatch = "Addon-Versionskonflikt.",
         core_importSuccess = "Einstellungen erfolgreich importiert.",
-        core_imported = "Importiert",
-        core_current = "Aktuell",
+        core_installed = "Installiert",
+        core_importString = "Import-Zeichenfolge",
+        core_dataMismatchWarning = "Es können Datenkompatibilitätsprobleme auftreten.",
         core_tagline = "Simple Addons—Minimale Addons für minimale Köpfe.",
         core_authorTitle = "Autor",
         core_authorName = "Drücken Sie STRG + C zum Kopieren",
@@ -2156,12 +2172,14 @@ do -- Localization
         core_importDecodeFailed = "Ошибка декодирования.",
         core_importDeserializeFailed = "Ошибка десериализации.",
         core_importInvalidData = "Неверная структура данных.",
-        core_importWrongAddon = "Импортированные настройки предназначены для другого аддона.",
-        core_importVersionMismatch = "Несоответствие версий.",
+        core_importWrongAddon = "Импортированные настройки предназначены для другого аддона",
+        core_importSadCoreVersionMismatch = "Несовпадение версий SAdCore.",
+        core_importAddonVersionMismatch = "Несовпадение версий аддона.",
         core_importSuccess = "Настройки успешно импортированы.",
-        core_imported = "Импортировано",
-        core_current = "Текущая",
-        core_tagline = "Simple Addons—Минимальные аддоны для минимального ума.",
+        core_installed = "Установлено",
+        core_importString = "Строка импорта",
+        core_dataMismatchWarning = "Возможны проблемы совместимости данных.",
+        core_tagline = "Simple Addons—Минимальные аддоны для минимальных умов.",
         core_authorTitle = "Автор",
         core_authorName = "Нажмите CTRL + C для копирования",
         core_errorConfigHelp1 = "Обнаружена ошибка конфигурации SavedVariables.",
