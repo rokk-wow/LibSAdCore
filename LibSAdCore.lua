@@ -1338,6 +1338,7 @@ do -- Controls
         fontString:SetJustifyV("TOP")
         fontString:SetWordWrap(true)
         fontString:SetText(self:L(name))
+        fontString:SetTextColor(1, 1, 1, 1)
 
         local stringHeight = fontString:GetStringHeight()
         frame:SetHeight(math.max(32, stringHeight))
@@ -1348,10 +1349,10 @@ do -- Controls
                 onClick(addonInstance)
             end)
             frame:SetScript("OnEnter", function(self)
-                fontString:SetTextColor(1, 0.82, 0, 1)
+                fontString:SetTextColor(1, 1, 1, 1)
             end)
             frame:SetScript("OnLeave", function(self)
-                fontString:SetTextColor(1.0, 0.82, 0, 1)
+                fontString:SetTextColor(1, 1, 1, 1)
             end)
         end
 
