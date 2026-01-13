@@ -207,6 +207,11 @@ function addon:LoadConfig()
                 onClick = self.mainButton
             },
             
+            -- Divider
+            {
+                type = "divider"
+            },
+            
             -- Description
             {
                 type = "description",

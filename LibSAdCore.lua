@@ -675,8 +675,7 @@ do -- Settings Panels
             name = "core_enableDebugging",
             default = false
         }, {
-            type = "header",
-            name = "core_infoHeader"
+            type = "divider"
         }, {
             type = "description",
             name = "core_tagline"
@@ -1361,6 +1360,25 @@ do -- Controls
         return frame, newYOffset
     end
 
+    function addon:AddDivider(parent, yOffset, panelKey)
+        parent, yOffset, panelKey = callHook(self, "BeforeAddDivider", parent, yOffset, panelKey)
+
+        local frame = CreateFrame("Frame", nil, parent)
+        frame:SetHeight(20)
+        frame:SetPoint("TOPLEFT", self.config.ui.spacing.controlLeft, yOffset)
+        frame:SetPoint("TOPRIGHT", self.config.ui.spacing.controlRight, yOffset)
+
+        frame.Line = frame:CreateTexture(nil, "ARTWORK")
+        frame.Line:SetHeight(1)
+        frame.Line:SetPoint("LEFT", 10, 0)
+        frame.Line:SetPoint("RIGHT", -10, 0)
+        frame.Line:SetColorTexture(0, 0, 0, 0.25)
+
+        local newYOffset = yOffset - 20
+        callHook(self, "AfterAddDivider", frame, newYOffset)
+        return frame, newYOffset
+    end
+
     function addon:AddInputBox(parent, yOffset, panelKey, name, default, highlightText, buttonText, onClick,
         onValueChange, sessionOnly)
         local addonInstance = self
@@ -1642,6 +1660,11 @@ do -- Controls
         elseif controlType == "colorPicker" then
             local control, newYOffset = self:AddColorPicker(parent, yOffset, panelKey, controlConfig.name,
                 controlConfig.default, controlConfig.onValueChange, controlConfig.skipRefresh, controlConfig.sessionOnly)
+            callHook(self, "AfterAddControl", control, newYOffset)
+            return control, newYOffset
+
+        elseif controlType == "divider" then
+            local control, newYOffset = self:AddDivider(parent, yOffset, panelKey)
             callHook(self, "AfterAddControl", control, newYOffset)
             return control, newYOffset
 
@@ -1957,7 +1980,6 @@ do -- Localization
         core_versionPrefix = "v",
         core_close = "Close",
         core_debuggingHeader = "Debugging",
-        core_infoHeader = "Info",
         core_profile = "Profile",
         core_enableDebugging = "Enable Debugging",
         core_enableDebuggingTooltip = "Enable debug messages in the chat window.",
@@ -1994,7 +2016,6 @@ do -- Localization
         core_versionPrefix = "v",
         core_close = "Cerrar",
         core_debuggingHeader = "Depuración",
-        core_infoHeader = "Información",
         core_profile = "Perfil",
         core_enableDebugging = "Habilitar Depuración",
         core_enableDebuggingTooltip = "Habilitar mensajes de depuración en la ventana de chat.",
@@ -2033,7 +2054,6 @@ do -- Localization
         core_versionPrefix = "v",
         core_close = "Fechar",
         core_debuggingHeader = "Depuração",
-        core_infoHeader = "Informação",
         core_profile = "Perfil",
         core_enableDebugging = "Habilitar Depuração",
         core_enableDebuggingTooltip = "Habilitar mensagens de depuração na janela de chat.",
@@ -2070,7 +2090,6 @@ do -- Localization
         core_versionPrefix = "v",
         core_close = "Fermer",
         core_debuggingHeader = "Débogage",
-        core_infoHeader = "Informations",
         core_profile = "Profil",
         core_enableDebugging = "Activer le Débogage",
         core_enableDebuggingTooltip = "Activer les messages de débogage dans la fenêtre de chat.",
@@ -2107,7 +2126,6 @@ do -- Localization
         core_versionPrefix = "v",
         core_close = "Schließen",
         core_debuggingHeader = "Debugging",
-        core_infoHeader = "Informationen",
         core_profile = "Profil",
         core_enableDebugging = "Debugging aktivieren",
         core_enableDebuggingTooltip = "Debug-Nachrichten im Chatfenster aktivieren.",
@@ -2144,7 +2162,6 @@ do -- Localization
         core_versionPrefix = "v",
         core_close = "Закрыть",
         core_debuggingHeader = "Дебаггинг",
-        core_infoHeader = "Информация",
         core_profile = "Профиль",
         core_enableDebugging = "Включить отладку",
         core_enableDebuggingTooltip = "Включить отладочные сообщения в окне чата.",
