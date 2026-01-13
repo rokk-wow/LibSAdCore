@@ -765,8 +765,7 @@ do -- Settings Panels
         end
 
         local panel = self:CreateSettingsPanel(panelKey)
-        local titleText = panelKey == "main" and (self:L(config.title) or self.addonName) or
-                              self:L(config.title)
+        local titleText = panelKey == "main" and self.addonName or self:L(config.title)
         panel.Title:SetText(titleText)
         panel.controlRefreshers = {}
 
