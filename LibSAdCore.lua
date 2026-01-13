@@ -641,6 +641,13 @@ do -- Settings Panels
         local headerControls = {}
         local footerControls = {{
             type = "header",
+            name = "core_debuggingHeader"
+        }, {
+            type = "checkbox",
+            name = "core_enableDebugging",
+            default = false
+        }, {
+            type = "header",
             name = "core_profile"
         }, {
             type = "checkbox",
@@ -668,15 +675,7 @@ do -- Settings Panels
                 self:ExportSettings()
             end
         }, {
-            type = "header",
-            name = "core_debuggingHeader"
-        }, {
-            type = "checkbox",
-            name = "core_enableDebugging",
-            default = false
-        }, {
-            type = "divider",
-            paddingTop = 20
+            type = "divider"
         }, {
             type = "description",
             name = "core_tagline"
@@ -1362,11 +1361,11 @@ do -- Controls
         return frame, newYOffset
     end
 
-    function addon:AddDivider(parent, yOffset, panelKey, paddingTop, paddingBottom)
-        parent, yOffset, panelKey, paddingTop, paddingBottom = callHook(self, "BeforeAddDivider", parent, yOffset, panelKey, paddingTop, paddingBottom)
+    function addon:AddDivider(parent, yOffset, panelKey)
+        parent, yOffset, panelKey = callHook(self, "BeforeAddDivider", parent, yOffset, panelKey)
 
-        paddingTop = paddingTop or 0
-        paddingBottom = paddingBottom or 20
+        paddingTop = 0
+        paddingBottom = 20
         local totalHeight = paddingTop + paddingBottom
 
         local frame = CreateFrame("Frame", nil, parent)
@@ -1670,7 +1669,7 @@ do -- Controls
             return control, newYOffset
 
         elseif controlType == "divider" then
-            local control, newYOffset = self:AddDivider(parent, yOffset, panelKey, controlConfig.paddingTop, controlConfig.paddingBottom)
+            local control, newYOffset = self:AddDivider(parent, yOffset, panelKey)
             callHook(self, "AfterAddControl", control, newYOffset)
             return control, newYOffset
 
