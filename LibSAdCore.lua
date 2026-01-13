@@ -1364,8 +1364,8 @@ do -- Controls
     function addon:AddDivider(parent, yOffset, panelKey, paddingTop, paddingBottom)
         parent, yOffset, panelKey, paddingTop, paddingBottom = callHook(self, "BeforeAddDivider", parent, yOffset, panelKey, paddingTop, paddingBottom)
 
-        paddingTop = paddingTop or 10
-        paddingBottom = paddingBottom or 10
+        paddingTop = paddingTop or 0
+        paddingBottom = paddingBottom or 20
         local totalHeight = paddingTop + paddingBottom
 
         local frame = CreateFrame("Frame", nil, parent)
