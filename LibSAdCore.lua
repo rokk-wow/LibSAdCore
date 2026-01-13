@@ -1361,21 +1361,25 @@ do -- Controls
         return frame, newYOffset
     end
 
-    function addon:AddDivider(parent, yOffset, panelKey)
-        parent, yOffset, panelKey = callHook(self, "BeforeAddDivider", parent, yOffset, panelKey)
+    function addon:AddDivider(parent, yOffset, panelKey, paddingTop, paddingBottom)
+        parent, yOffset, panelKey, paddingTop, paddingBottom = callHook(self, "BeforeAddDivider", parent, yOffset, panelKey, paddingTop, paddingBottom)
+
+        paddingTop = paddingTop or 10
+        paddingBottom = paddingBottom or 10
+        local totalHeight = paddingTop + paddingBottom
 
         local frame = CreateFrame("Frame", nil, parent)
-        frame:SetHeight(20)
+        frame:SetHeight(totalHeight)
         frame:SetPoint("TOPLEFT", self.config.ui.spacing.controlLeft, yOffset)
         frame:SetPoint("TOPRIGHT", self.config.ui.spacing.controlRight, yOffset)
 
         frame.Line = frame:CreateTexture(nil, "ARTWORK")
         frame.Line:SetHeight(1)
-        frame.Line:SetPoint("LEFT", 10, 0)
-        frame.Line:SetPoint("RIGHT", -10, 0)
+        frame.Line:SetPoint("LEFT", 10, -paddingTop)
+        frame.Line:SetPoint("RIGHT", -10, -paddingTop)
         frame.Line:SetColorTexture(0, 0, 0, 0.25)
 
-        local newYOffset = yOffset - 20
+        local newYOffset = yOffset - totalHeight
         callHook(self, "AfterAddDivider", frame, newYOffset)
         return frame, newYOffset
     end
@@ -1665,7 +1669,7 @@ do -- Controls
             return control, newYOffset
 
         elseif controlType == "divider" then
-            local control, newYOffset = self:AddDivider(parent, yOffset, panelKey)
+            local control, newYOffset = self:AddDivider(parent, yOffset, panelKey, controlConfig.paddingTop, controlConfig.paddingBottom)
             callHook(self, "AfterAddControl", control, newYOffset)
             return control, newYOffset
 
