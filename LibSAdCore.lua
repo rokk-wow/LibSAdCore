@@ -1349,7 +1349,7 @@ do -- Controls
                 onClick(addonInstance)
             end)
             frame:SetScript("OnEnter", function(self)
-                fontString:SetTextColor(1, 1, 1, 1)
+                fontString:SetTextColor(1, 0.82, 0, 1)
             end)
             frame:SetScript("OnLeave", function(self)
                 fontString:SetTextColor(1, 1, 1, 1)
