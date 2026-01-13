@@ -22,7 +22,6 @@ function addon:LoadConfig()
                 type = "checkbox",
                 name = "exampleCheckbox",
                 default = true,
-                persistent = true,
                 onValueChange = self.exampleCheckbox
             },
         }
@@ -40,7 +39,6 @@ function addon:LoadConfig()
                 type = "checkbox",
                 name = "examplePanelCheckbox",
                 default = true,
-                persistent = true,
                 onValueChange = self.examplePanelCheckbox
             },
         }

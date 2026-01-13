@@ -649,13 +649,11 @@ do -- Settings Panels
         }, {
             type = "checkbox",
             name = "core_logVersion",
-            default = false,
-            persistent = true
+            default = false
         }, {
             type = "checkbox",
             name = "core_enableDebugging",
-            default = false,
-            persistent = true
+            default = false
         }, {
             type = "header",
             name = "core_profile"
@@ -673,6 +671,7 @@ do -- Settings Panels
             type = "inputBox",
             name = "core_loadSettings",
             buttonText = "core_loadSettingsButton",
+            sessionOnly = true,
             onClick = function(addonInstance, inputText, editBox)
                 addonInstance:ImportSettings(inputText)
                 editBox:SetText("")
@@ -873,14 +872,14 @@ do -- Controls
         return header, newYOffset
     end
 
-    function addon:AddCheckbox(parent, yOffset, panelKey, name, defaultValue, onValueChange, skipRefresh, persistent)
+    function addon:AddCheckbox(parent, yOffset, panelKey, name, defaultValue, onValueChange, skipRefresh, sessionOnly)
         local addonInstance = self
-        parent, yOffset, panelKey, name, defaultValue, onValueChange, skipRefresh, persistent = callHook(self,
-            "BeforeAddCheckbox", parent, yOffset, panelKey, name, defaultValue, onValueChange, skipRefresh, persistent)
+        parent, yOffset, panelKey, name, defaultValue, onValueChange, skipRefresh, sessionOnly = callHook(self,
+            "BeforeAddCheckbox", parent, yOffset, panelKey, name, defaultValue, onValueChange, skipRefresh, sessionOnly)
 
         local getValue, setValue
 
-        if persistent ~= true then
+        if sessionOnly == true then
             local tempValue = defaultValue
             getValue = function()
                 return tempValue
@@ -991,15 +990,15 @@ do -- Controls
     end
 
     function addon:AddDropdown(parent, yOffset, panelKey, name, defaultValue, options, onValueChange, skipRefresh,
-        persistent)
+        sessionOnly)
         local addonInstance = self
-        parent, yOffset, panelKey, name, defaultValue, options, onValueChange, skipRefresh, persistent = callHook(self,
+        parent, yOffset, panelKey, name, defaultValue, options, onValueChange, skipRefresh, sessionOnly = callHook(self,
             "BeforeAddDropdown", parent, yOffset, panelKey, name, defaultValue, options, onValueChange, skipRefresh,
-            persistent)
+            sessionOnly)
 
         local currentValue = defaultValue
 
-        if persistent == true then
+        if sessionOnly ~= true then
             self.settings[panelKey] = self.settings[panelKey] or {}
             if self.settings[panelKey][name] == nil then
                 self.settings[panelKey][name] = defaultValue
@@ -1024,13 +1023,13 @@ do -- Controls
         UIDropDownMenu_SetWidth(dropdown.Dropdown, self.config.ui.dropdown.width)
 
         local initializeFunc = function(dropdownFrame, level)
-            local savedValue = persistent and addonInstance.settings[panelKey][name] or currentValue
+            local savedValue = (sessionOnly ~= true) and addonInstance.settings[panelKey][name] or currentValue
             for _, option in ipairs(options) do
                 local info = UIDropDownMenu_CreateInfo()
                 info.text = addonInstance:L(option.label)
                 info.value = option.value
                 info.func = function(self)
-                    if persistent == true then
+                    if sessionOnly ~= true then
                         addonInstance.settings[panelKey][name] = self.value
                     else
                         currentValue = self.value
@@ -1053,7 +1052,7 @@ do -- Controls
             onValueChange(addonInstance, currentValue or defaultValue)
         end
 
-        if not skipRefresh and persistent == true then
+        if not skipRefresh and sessionOnly ~= true then
             dropdown.refresh = function()
                 addonInstance.settings[panelKey] = addonInstance.settings[panelKey] or {}
                 local value = addonInstance.settings[panelKey][name]
@@ -1070,15 +1069,15 @@ do -- Controls
     end
 
     function addon:AddSlider(parent, yOffset, panelKey, name, defaultValue, minValue, maxValue, step, onValueChange,
-        skipRefresh, persistent)
+        skipRefresh, sessionOnly)
         local addonInstance = self
-        parent, yOffset, panelKey, name, defaultValue, minValue, maxValue, step, onValueChange, skipRefresh, persistent =
+        parent, yOffset, panelKey, name, defaultValue, minValue, maxValue, step, onValueChange, skipRefresh, sessionOnly =
             callHook(self, "BeforeAddSlider", parent, yOffset, panelKey, name, defaultValue, minValue, maxValue, step,
-                onValueChange, skipRefresh, persistent)
+                onValueChange, skipRefresh, sessionOnly)
 
         local currentValue = defaultValue
 
-        if persistent == true then
+        if sessionOnly ~= true then
             self.settings[panelKey] = self.settings[panelKey] or {}
             if self.settings[panelKey][name] == nil then
                 self.settings[panelKey][name] = defaultValue
@@ -1123,7 +1122,7 @@ do -- Controls
         end
 
         slider.Slider:RegisterCallback(MinimalSliderWithSteppersMixin.Event.OnValueChanged, function(_, value)
-            if persistent == true then
+            if sessionOnly ~= true then
                 addonInstance.settings[panelKey][name] = value
             else
                 currentValue = value
@@ -1134,7 +1133,7 @@ do -- Controls
             end
         end)
 
-        if not skipRefresh and persistent == true then
+        if not skipRefresh and sessionOnly ~= true then
             slider.refresh = function()
                 addonInstance.settings[panelKey] = addonInstance.settings[panelKey] or {}
                 local value = addonInstance.settings[panelKey][name]
@@ -1205,15 +1204,15 @@ do -- Controls
         return button, newYOffset
     end
 
-    function addon:AddColorPicker(parent, yOffset, panelKey, name, defaultValue, onValueChange, skipRefresh, persistent)
+    function addon:AddColorPicker(parent, yOffset, panelKey, name, defaultValue, onValueChange, skipRefresh, sessionOnly)
         local addonInstance = self
-        parent, yOffset, panelKey, name, defaultValue, onValueChange, skipRefresh, persistent = callHook(self,
+        parent, yOffset, panelKey, name, defaultValue, onValueChange, skipRefresh, sessionOnly = callHook(self,
             "BeforeAddColorPicker", parent, yOffset, panelKey, name, defaultValue, onValueChange, skipRefresh,
-            persistent)
+            sessionOnly)
 
         local currentValue = defaultValue
 
-        if persistent == true then
+        if sessionOnly ~= true then
             self.settings[panelKey] = self.settings[panelKey] or {}
             if self.settings[panelKey][name] == nil then
                 self.settings[panelKey][name] = defaultValue
@@ -1255,7 +1254,7 @@ do -- Controls
         local function updateColor(hexColor)
             local r, g, b, a = self:hexToRGB(hexColor)
             colorPicker.ColorSwatch.Color:SetColorTexture(r, g, b, a)
-            if persistent == true then
+            if sessionOnly ~= true then
                 self.settings[panelKey][name] = hexColor
             else
                 currentValue = hexColor
@@ -1270,7 +1269,7 @@ do -- Controls
         end
 
         colorPicker.ColorSwatch:SetScript("OnClick", function(self)
-            local r, g, b, a = addonInstance:hexToRGB(persistent == true and addonInstance.settings[panelKey][name] or
+            local r, g, b, a = addonInstance:hexToRGB((sessionOnly ~= true) and addonInstance.settings[panelKey][name] or
                                                           currentValue or defaultValue)
 
             ColorPickerFrame:SetupColorPickerAndShow({
@@ -1297,7 +1296,7 @@ do -- Controls
             })
         end)
 
-        if not skipRefresh and persistent == true then
+        if not skipRefresh and sessionOnly ~= true then
             colorPicker.refresh = function()
                 self.settings[panelKey] = self.settings[panelKey] or {}
                 local value = self.settings[panelKey][name]
@@ -1368,11 +1367,11 @@ do -- Controls
     end
 
     function addon:AddInputBox(parent, yOffset, panelKey, name, default, highlightText, buttonText, onClick,
-        onValueChange, persistent)
+        onValueChange, sessionOnly)
         local addonInstance = self
-        parent, yOffset, panelKey, name, default, highlightText, buttonText, onClick, onValueChange, persistent =
+        parent, yOffset, panelKey, name, default, highlightText, buttonText, onClick, onValueChange, sessionOnly =
             callHook(self, "BeforeAddInputBox", parent, yOffset, panelKey, name, default, highlightText, buttonText,
-                onClick, onValueChange, persistent)
+                onClick, onValueChange, sessionOnly)
 
         local control = CreateFrame("Frame", nil, parent)
         control:SetHeight(32)
@@ -1400,7 +1399,7 @@ do -- Controls
         control.Button:SetSize(60, 22)
         control.Button:SetPoint("LEFT", control.EditBox, "RIGHT", 8, 0)
 
-        local shouldPersist = persistent == true
+        local shouldPersist = sessionOnly ~= true
 
         if shouldPersist then
             self.settings[panelKey] = self.settings[panelKey] or {}
@@ -1607,21 +1606,21 @@ do -- Controls
 
         elseif controlType == "checkbox" then
             local control, newYOffset = self:AddCheckbox(parent, yOffset, panelKey, controlConfig.name,
-                controlConfig.default, controlConfig.onValueChange, controlConfig.skipRefresh, controlConfig.persistent)
+                controlConfig.default, controlConfig.onValueChange, controlConfig.skipRefresh, controlConfig.sessionOnly)
             callHook(self, "AfterAddControl", control, newYOffset)
             return control, newYOffset
 
         elseif controlType == "dropdown" then
             local control, newYOffset = self:AddDropdown(parent, yOffset, panelKey, controlConfig.name,
                 controlConfig.default, controlConfig.options, controlConfig.onValueChange, controlConfig.skipRefresh,
-                controlConfig.persistent)
+                controlConfig.sessionOnly)
             callHook(self, "AfterAddControl", control, newYOffset)
             return control, newYOffset
 
         elseif controlType == "slider" then
             local control, newYOffset = self:AddSlider(parent, yOffset, panelKey, controlConfig.name,
                 controlConfig.default, controlConfig.min, controlConfig.max, controlConfig.step,
-                controlConfig.onValueChange, controlConfig.skipRefresh, controlConfig.persistent)
+                controlConfig.onValueChange, controlConfig.skipRefresh, controlConfig.sessionOnly)
             callHook(self, "AfterAddControl", control, newYOffset)
             return control, newYOffset
 
@@ -1641,13 +1640,13 @@ do -- Controls
             local buttonText = controlConfig.buttonText and self:L(controlConfig.buttonText) or nil
             local control, newYOffset = self:AddInputBox(parent, yOffset, panelKey, controlConfig.name,
                 controlConfig.default, controlConfig.highlightText, buttonText, controlConfig.onClick,
-                controlConfig.onValueChange, controlConfig.persistent)
+                controlConfig.onValueChange, controlConfig.sessionOnly)
             callHook(self, "AfterAddControl", control, newYOffset)
             return control, newYOffset
 
         elseif controlType == "colorPicker" then
             local control, newYOffset = self:AddColorPicker(parent, yOffset, panelKey, controlConfig.name,
-                controlConfig.default, controlConfig.onValueChange, controlConfig.skipRefresh, controlConfig.persistent)
+                controlConfig.default, controlConfig.onValueChange, controlConfig.skipRefresh, controlConfig.sessionOnly)
             callHook(self, "AfterAddControl", control, newYOffset)
             return control, newYOffset
 

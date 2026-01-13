@@ -83,7 +83,6 @@ SAddons are:
                    type = "checkbox",
                    name = "exampleCheckbox",
                    default = true,
-                   persistent = true,
                    onValueChange = self.exampleCheckbox
                }
            }
@@ -101,7 +100,6 @@ SAddons are:
                    type = "checkbox",
                    name = "examplePanelCheckbox",
                    default = true,
-                   persistent = true,
                    onValueChange = self.examplePanelCheckbox
                }
            }
@@ -158,7 +156,6 @@ function addon:LoadConfig()
                 type = "checkbox",
                 name = "mainCheckbox",
                 default = true,
-                persistent = true,
                 onValueChange = self.mainCheckbox
             },
             
@@ -167,7 +164,6 @@ function addon:LoadConfig()
                 type = "dropdown",
                 name = "mainDropdown",
                 default = "option2",
-                persistent = true,
                 options = {
                     {value = "option1", label = "dropdownOption1"},
                     {value = "option2", label = "dropdownOption2"},
@@ -184,7 +180,6 @@ function addon:LoadConfig()
                 min = 0,
                 max = 100,
                 step = 5,
-                persistent = true,
                 onValueChange = self.mainSlider
             },
             
@@ -193,7 +188,6 @@ function addon:LoadConfig()
                 type = "colorPicker",
                 name = "mainColor",
                 default = "#FFFFFF",
-                persistent = true,
                 onValueChange = self.mainColor
             },
             
@@ -203,8 +197,7 @@ function addon:LoadConfig()
                 name = "mainInput",
                 default = "Enter text",
                 buttonText = "mainInputButton",
-                onClick = self.mainInputButton,
-                persistent = true
+                onClick = self.mainInputButton
             },
             
             -- Button
@@ -234,7 +227,6 @@ function addon:LoadConfig()
                 type = "checkbox",
                 name = "advancedCheckbox",
                 default = false,
-                persistent = true,
                 onValueChange = self.advancedCheckbox
             }
         }
@@ -306,7 +298,19 @@ addon.locale.enEN = {
 
 ### Persistent vs Session-Only Controls
 
-Set `persistent = true` to save settings permanently (survives logout/exit). If the user has selected the Global profile, it will be saved to the global saved variables. If the user has selected the Character only profile, it will be saved to the character saved variables.
+By default, all control values are automatically persisted to saved variables. If the user has selected the Global profile, values are saved to the global saved variables. If the user has selected the Character profile, values are saved to the character saved variables.
+
+To create a control that only exists for the current game session (and is reset when the user logs out), set `sessionOnly = true`:
+
+```lua
+{
+    type = "checkbox",
+    name = "temporaryCheckbox",
+    default = false,
+    sessionOnly = true,  -- This value will NOT be persisted
+    onValueChange = self.temporaryCheckbox
+}
+```
 
 ### Automatic Tooltips
 
@@ -314,7 +318,7 @@ To add a tooltip, define a localization key with the control's name + `"Tooltip"
 
 ## Accessing Saved Settings
 
-If a control is persisted, it can be later accessed through 'self.settings' organized by panel key. Access control values using `self.settings.panelKey.controlName`.
+Control values are automatically persisted and can be accessed through `self.settings` organized by panel key. Access control values using `self.settings.panelKey.controlName`. Note that controls marked with `sessionOnly = true` will not be available in `self.settings` as they are not persisted.
 
 **Example:**
 ```lua
