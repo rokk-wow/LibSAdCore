@@ -1708,6 +1708,12 @@ do -- Utility Functions
     function addon:OpenSettings()
         callHook(self, "BeforeOpenSettings")
 
+        if InCombatLockdown() then
+            self:error(self:L("core_cannotOpenInCombat"))
+            callHook(self, "AfterOpenSettings", false)
+            return false
+        end
+
         if type(Settings) == "table" and type(Settings.OpenToCategory) == "function" then
             if self.settingsCategory and self.settingsCategory.ID then
                 Settings.OpenToCategory(self.settingsCategory.ID)
@@ -2011,7 +2017,8 @@ do -- Localization
         core_authorName = "Press CTRL + C to Copy",
         core_errorConfigHelp1 = "SavedVariables configuration error detected.",
         core_errorConfigHelp2 = "All variable names must contain the addon name to ensure uniqueness across all addons.",
-        core_errorConfigExample = "Example configuration for addon"
+        core_errorConfigExample = "Example configuration for addon",
+        core_cannotOpenInCombat = "Cannot open settings while in combat."
     }
 
     -- Spanish
@@ -2047,7 +2054,8 @@ do -- Localization
         core_authorName = "Presiona CTRL + C para Copiar",
         core_errorConfigHelp1 = "Se detectó un error de configuración de SavedVariables.",
         core_errorConfigHelp2 = "Todos los nombres de variables deben contener el nombre del addon para garantizar la unicidad entre todos los addons.",
-        core_errorConfigExample = "Ejemplo de configuración para el addon"
+        core_errorConfigExample = "Ejemplo de configuración para el addon",
+        core_cannotOpenInCombat = "No se puede abrir la configuración durante el combate."
     }
 
     SAdCore.prototype.locale.esMX = SAdCore.prototype.locale.esES
@@ -2085,7 +2093,8 @@ do -- Localization
         core_authorName = "Pressione CTRL + C para Copiar",
         core_errorConfigHelp1 = "Erro de configuração de SavedVariables detectado.",
         core_errorConfigHelp2 = "Todos os nomes de variáveis devem conter o nome do addon para garantir exclusividade entre todos os addons.",
-        core_errorConfigExample = "Exemplo de configuração para o addon"
+        core_errorConfigExample = "Exemplo de configuração para o addon",
+        core_cannotOpenInCombat = "Não é possível abrir as configurações durante o combate."
     }
 
     -- French
