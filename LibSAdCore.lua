@@ -575,19 +575,19 @@ do -- Zone Management
     function addon:GetCurrentZone()
         callHook(self, "BeforeGetCurrentZone")
 
-        local zoneName = "WORLD"
+        local zoneName = "world"
         local instanceName, instanceType = GetInstanceInfo()
 
         if instanceType == "arena" then
-            zoneName = "ARENA"
+            zoneName = "arena"
         elseif instanceType == "pvp" then
-            zoneName = "BATTLEGROUND"
+            zoneName = "battleground"
         elseif instanceType == "party" then
-            zoneName = "DUNGEON"
+            zoneName = "dungeon"
         elseif instanceType == "raid" then
-            zoneName = "RAID"
+            zoneName = "raid"
         else
-            zoneName = "WORLD"
+            zoneName = "world"
         end
 
         local returnValue = zoneName
