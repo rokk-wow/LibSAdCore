@@ -1809,7 +1809,6 @@ do -- Utility Functions
         local exportData = {
             addon = self.addonName,
             version = tostring(self.config.version),
-            sadCoreVersion = tostring(self.sadCore.version),
             settings = self.settings
         }
 
@@ -1896,10 +1895,8 @@ do -- Utility Functions
         end
         self:debug("Data keys: " .. table.concat(keys, ", "))
 
-        self:debug("Import data - addon: " .. tostring(data.addon) .. ", version: " .. tostring(data.version) ..
-                       ", sadCoreVersion: " .. tostring(data.sadCoreVersion))
-        self:debug("Current data - addon: " .. tostring(self.addonName) .. ", version: " ..
-                       tostring(self.config.version) .. ", sadCoreVersion: " .. tostring(self.sadCore.version))
+        self:debug("Import: - addon: " .. tostring(data.addon) .. ", version: " .. tostring(data.version))
+        self:debug("Loaded: - addon: " .. tostring(self.addonName) .. ", version: " ..tostring(self.config.version))
 
         if data.addon ~= self.addonName then
             self:error(self:L("core_importWrongAddon") .. ": " .. tostring(data.addon) .. " (expected: " ..
@@ -1911,14 +1908,6 @@ do -- Utility Functions
 
         self:debug("Addon name check passed")
 
-        -- Check SAdCore version mismatch
-        if tostring(data.sadCoreVersion) ~= tostring(self.sadCore.version) then
-            self:info(self:L("core_importSadCoreVersionMismatch") .. " " .. self:L("core_installed") .. ": " ..
-                          tostring(self.sadCore.version) .. ", " .. self:L("core_importString") .. ": " ..
-                          tostring(data.sadCoreVersion) .. ". " .. self:L("core_dataMismatchWarning"))
-        end
-
-        -- Check addon version mismatch
         if tostring(data.version) ~= tostring(self.config.version) then
             self:info(self:L("core_importAddonVersionMismatch") .. " " .. self:L("core_installed") .. ": " ..
                           tostring(self.config.version) .. ", " .. self:L("core_importString") .. ": " ..
@@ -1976,7 +1965,6 @@ do -- Localization
         core_importDeserializeFailed = "Deserialize failed.",
         core_importInvalidData = "Invalid data structure.",
         core_importWrongAddon = "Imported settings are for a different addon",
-        core_importSadCoreVersionMismatch = "SAdCore version mismatch.",
         core_importAddonVersionMismatch = "Addon version mismatch.",
         core_importSuccess = "Settings imported successfully.",
         core_installed = "Installed",
@@ -2013,7 +2001,6 @@ do -- Localization
         core_importDeserializeFailed = "Error al deserializar.",
         core_importInvalidData = "Estructura de datos inválida.",
         core_importWrongAddon = "La configuración importada es para un addon diferente",
-        core_importSadCoreVersionMismatch = "La versión de SAdCore no coincide.",
         core_importAddonVersionMismatch = "La versión del addon no coincide.",
         core_importSuccess = "Configuración importada exitosamente.",
         core_installed = "Instalado",
@@ -2052,7 +2039,6 @@ do -- Localization
         core_importDeserializeFailed = "Falha na desserialização.",
         core_importInvalidData = "Estrutura de dados inválida.",
         core_importWrongAddon = "As configurações importadas são para um addon diferente",
-        core_importSadCoreVersionMismatch = "Incompatibilidade de versão do SAdCore.",
         core_importAddonVersionMismatch = "Incompatibilidade de versão do addon.",
         core_importSuccess = "Configurações importadas com sucesso.",
         core_installed = "Instalado",
@@ -2089,7 +2075,6 @@ do -- Localization
         core_importDeserializeFailed = "Échec de la désérialisation.",
         core_importInvalidData = "Structure de données invalide.",
         core_importWrongAddon = "Les paramètres importés sont pour un addon différent",
-        core_importSadCoreVersionMismatch = "Incompatibilité de version de SAdCore.",
         core_importAddonVersionMismatch = "Incompatibilité de version de l'addon.",
         core_importSuccess = "Paramètres importés avec succès.",
         core_installed = "Installé",
@@ -2125,7 +2110,6 @@ do -- Localization
         core_importDeserializeFailed = "Deserialisierung fehlgeschlagen.",
         core_importInvalidData = "Ungültige Datenstruktur.",
         core_importWrongAddon = "Die importierten Einstellungen sind für ein anderes Addon",
-        core_importSadCoreVersionMismatch = "SAdCore-Versionskonflikt.",
         core_importAddonVersionMismatch = "Addon-Versionskonflikt.",
         core_importSuccess = "Einstellungen erfolgreich importiert.",
         core_installed = "Installiert",
@@ -2161,7 +2145,6 @@ do -- Localization
         core_importDeserializeFailed = "Ошибка десериализации.",
         core_importInvalidData = "Неверная структура данных.",
         core_importWrongAddon = "Импортированные настройки предназначены для другого аддона",
-        core_importSadCoreVersionMismatch = "Несовпадение версий SAdCore.",
         core_importAddonVersionMismatch = "Несовпадение версий аддона.",
         core_importSuccess = "Настройки успешно импортированы.",
         core_installed = "Установлено",
