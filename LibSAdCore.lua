@@ -389,9 +389,6 @@ do -- Initialization
             self:RegisterFunctions()
         end
 
-        self.currentZone = self:GetCurrentZone()
-        self.previousZone = nil
-
         local returnValue = true
         callHook(self, "AfterInitialize", returnValue)
 
@@ -608,6 +605,16 @@ do -- Zone Management
         end
 
         local newZone = self:GetCurrentZone()
+
+        -- Initialize currentZone if it's nil (first time through)
+        if self.currentZone == nil then
+            self.currentZone = newZone
+            self.previousZone = nil
+            
+            local returnValue = true
+            callHook(self, "AfterHandleZoneChange", returnValue)
+            return returnValue
+        end
 
         if newZone == self.currentZone then
             local returnValue = false
