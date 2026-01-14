@@ -1923,6 +1923,19 @@ do -- Utility Functions
 
         local importedSettings = data.settings
 
+        self:debug("===== IMPORTED SETTINGS =====")
+        for key, value in pairs(importedSettings) do
+            if type(value) == "table" then
+                self:debug("  " .. tostring(key) .. " = table:")
+                for innerKey, innerValue in pairs(value) do
+                    self:debug("    " .. tostring(innerKey) .. " = " .. tostring(innerValue) .. " (type: " .. type(innerValue) .. ")")
+                end
+            else
+                self:debug("  " .. tostring(key) .. " = " .. tostring(value) .. " (type: " .. type(value) .. ")")
+            end
+        end
+        self:debug("=============================")
+
         self:debug("Clearing current settings and importing...")
         for key in pairs(self.settings) do
             self.settings[key] = nil
