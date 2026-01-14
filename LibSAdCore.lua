@@ -591,25 +591,19 @@ do -- Zone Management
 
         local currentZone = self:GetCurrentZone()
 
+        if currentZone == self.previousZone and self.previousZone ~= nil then
+            local returnValue = false
+            callHook(self, "AfterHandleZoneChange", returnValue)
+            return returnValue
+        end
+
         self.previousZone = self.currentZone
         self.currentZone = currentZone
 
-        if self.zoneCallbacks and self.zoneCallbacks[self.currentZone] then
-            local zoneName = self.currentZone:lower()
-            if self.L then
-                addon.coreInfo(self:L("entering") .. " " .. self:L(zoneName) .. ".")
-            end
-
-            local enterCallback = self.zoneCallbacks[self.currentZone]
-            if enterCallback and type(enterCallback) == "function" then
-                enterCallback()
-            end
-        end
-
-        callHook(self, "OnZoneChange", self.currentZone)
+        callHook(self, "OnZoneChange", self, currentZone)
 
         local returnValue = true
-        callHook(self, "AfterHandleZoneChange", returnValue)
+        callHook(self, "AfterHandleZoneChange", returnValue, self.currentZone)
         return returnValue
     end
 end
