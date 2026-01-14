@@ -375,6 +375,18 @@ do -- Initialization
         self.currentZone = self:GetCurrentZone()
         self.previousZone = nil
 
+        local handleZoneChangeCallback = function(event, ...)
+            self:HandleZoneChange()
+        end
+
+        self:RegisterEvent("PLAYER_ENTERING_WORLD", handleZoneChangeCallback)
+        self:RegisterEvent("ZONE_CHANGED_NEW_AREA", handleZoneChangeCallback)
+        self:RegisterEvent("PVP_MATCH_ACTIVE", handleZoneChangeCallback)
+        self:RegisterEvent("ARENA_PREP_OPPONENT_SPECIALIZATIONS", handleZoneChangeCallback)
+        self:RegisterEvent("ARENA_OPPONENT_UPDATE", handleZoneChangeCallback)
+        self:RegisterEvent("PVP_MATCH_INACTIVE", handleZoneChangeCallback)
+        self:RegisterEvent("PLAYER_ROLES_ASSIGNED", handleZoneChangeCallback)
+
         if self.LoadConfig then
             self:LoadConfig()
         end
@@ -545,32 +557,6 @@ do -- Zone Management
 
     addon.zones = {"arena", "battleground", "dungeon", "raid", "world"}
 
-    function addon:RegisterZone(zoneName, enterCallback)
-        zoneName, enterCallback = callHook(self, "BeforeRegisterZone", zoneName, enterCallback)
-
-        if not self.zoneCallbacks then
-            self.zoneCallbacks = {}
-
-            local handleZoneChangeCallback = function(event, ...)
-                self:HandleZoneChange()
-            end
-
-            self:RegisterEvent("PLAYER_ENTERING_WORLD", handleZoneChangeCallback)
-            self:RegisterEvent("ZONE_CHANGED_NEW_AREA", handleZoneChangeCallback)
-            self:RegisterEvent("PVP_MATCH_ACTIVE", handleZoneChangeCallback)
-            self:RegisterEvent("ARENA_PREP_OPPONENT_SPECIALIZATIONS", handleZoneChangeCallback)
-            self:RegisterEvent("ARENA_OPPONENT_UPDATE", handleZoneChangeCallback)
-            self:RegisterEvent("PVP_MATCH_INACTIVE", handleZoneChangeCallback)
-            self:RegisterEvent("PLAYER_ROLES_ASSIGNED", handleZoneChangeCallback)
-        end
-
-        self.zoneCallbacks[zoneName:lower()] = enterCallback
-
-        local returnValue = true
-        callHook(self, "AfterRegisterZone", returnValue)
-        return returnValue
-    end
-
     function addon:GetCurrentZone()
         callHook(self, "BeforeGetCurrentZone")
 
@@ -619,6 +605,8 @@ do -- Zone Management
                 enterCallback()
             end
         end
+
+        callHook(self, "OnZoneChange", self.currentZone)
 
         local returnValue = true
         callHook(self, "AfterHandleZoneChange", returnValue)

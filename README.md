@@ -431,6 +431,12 @@ end
 
 SAdCore provides automatic zone detection and callbacks. This feature is designed for addons that want to take advantage of zone-based behavior (like chat filters or UI visibility in different zones).
 
+```lua
+function addon:OnZoneChange(currentZone)
+    -- Apply zone-specific logic here
+end
+```
+
 ### Supported Zones
 - `"arena"` - Arena instances
 - `"battleground"` - Battleground instances
@@ -438,34 +444,6 @@ SAdCore provides automatic zone detection and callbacks. This feature is designe
 - `"raid"` - Raid instances
 - `"world"` - Open world (default)
 
-### Registering Zone Callbacks
-
-Register a callback for when the player enters a zone:
-
-```lua
-function addon:RegisterFunctions()
-    self:RegisterZone("ARENA", self.enteringArena)
-    self:RegisterZone("BATTLEGROUND", self.enteringBattleground)
-    self:RegisterZone("WORLD", self.enteringWorld)
-end
-
-function addon:enteringArena()
-    self:info("Entered arena - applying arena settings")
-    -- Apply your arena-specific settings
-end
-
-function addon:enteringWorld()
-    self:info("Entered world - restoring default settings")
-    -- Restore default settings
-end
-```
-
-### Getting Current Zone
-
-```lua
-local currentZone = self:GetCurrentZone()
--- Returns: "ARENA", "BATTLEGROUND", "DUNGEON", "RAID", or "WORLD"
-```
 
 ## Common API Functions
 
@@ -481,11 +459,11 @@ These are the most commonly used functions available on the `self` object within
 
 ### Events & Commands
 - **`self:RegisterEvent(eventName, callback)`** - Register a WoW event with a callback function
-- **`self:RegisterZone(zoneName, callback)`** - Register a callback when player enters a zone
 - **`self:RegisterSlashCommand(command, callback)`** - Register a custom slash command as a parameter to the main addon command
 
 ### Zone Detection
-- **`self:GetCurrentZone()`** - Returns current zone: "ARENA", "BATTLEGROUND", "DUNGEON", "RAID", or "WORLD"
+- **`self:GetCurrentZone()`** - Returns current zone: "arena", "battleground", "dungeon", "raid", or "world"
+- **`addon:OnZoneChange(currentZone)`** - Override this hook to respond to zone changes (currentZone parameter passed automatically)
 
 ### Settings
 - **`self:OpenSettings()`** - Opens the addon settings panel
