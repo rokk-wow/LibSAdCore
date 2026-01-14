@@ -389,6 +389,10 @@ do -- Initialization
             self:RegisterFunctions()
         end
 
+        -- Initialize current zone
+        self.currentZone = self:GetCurrentZone()
+        self.previousZone = nil
+
         local returnValue = true
         callHook(self, "AfterInitialize", returnValue)
 
