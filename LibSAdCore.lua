@@ -1993,7 +1993,7 @@ do -- Localization
         core_profile = "Profile",
         core_enableDebugging = "Enable Debugging",
         core_enableDebuggingTooltip = "Enable debug messages in the chat window.",
-        core_useCharacterSettings = "Use Character-Specific Settings",
+        core_useCharacterSettings = "Use Character Specific Settings",
         core_characterSpecificSettingsTooltip = "When enabled, settings will be saved per character instead of account-wide.",
         core_loadSettings = "Load Settings from String",
         core_loadSettingsTooltip = "Paste an exported settings string and click Load to import settings.",
