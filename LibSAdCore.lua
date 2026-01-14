@@ -1822,11 +1822,6 @@ do -- Utility Functions
 
         self.settings = useCharacter and self.settingsChar or self.settingsGlobal
 
-        self:debug("After assignment, self.settings == self.settingsChar: " ..
-                       tostring(self.settings == self.settingsChar))
-        self:debug("After assignment, self.settings == self.settingsGlobal: " ..
-                       tostring(self.settings == self.settingsGlobal))
-
         local profileType = useCharacter and "Character" or "Global"
         self:debug("Profile switched to: " .. profileType)
         self:RefreshSettingsPanels()
