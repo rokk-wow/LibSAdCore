@@ -389,7 +389,6 @@ do -- Initialization
             self:RegisterFunctions()
         end
 
-        -- Initialize current zone
         self.currentZone = self:GetCurrentZone()
         self.previousZone = nil
 
@@ -887,7 +886,7 @@ do -- Controls
                     onValueChange(addonInstance, value)
                 end
             end
-        elseif name == "useCharacterSettings" then
+        elseif name == "core_useCharacterSettings" then
             getValue = function()
                 return self.settingsChar.useCharacterSettings
             end
@@ -1759,7 +1758,7 @@ do -- Utility Functions
     end
 
     function addon:coreDebug(text)
-        if self.settings and self.settings.main and self.settings.main.enableDebugging then
+        if self.settings and self.settings.main and self.settings.main.core_enableDebugging then
             print("\124cffDB09FE" .. "SAdCore" .. " Debug: " .. "\124cffBAFF1A" .. tostring(text))
         end
     end
@@ -1786,8 +1785,8 @@ do -- Utility Functions
 
     function addon:debug(text)
         text = callHook(self, "BeforeDebug", text)
-
-        if self.settings and self.settings.main and self.settings.main.enableDebugging then
+       
+        if self.settings and self.settings.main and self.settings.main.core_enableDebugging then
             print("\124cffDB09FE" .. self.addonName .. " Debug: " .. "\124cffBAFF1A" .. tostring(text))
         end
 
