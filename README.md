@@ -144,7 +144,6 @@ function addon:LoadConfig()
     
     -- Main Settings Panel
     self.config.settings.main = {
-        title = "mainTitle",
         controls = {
             -- Header
             {
@@ -274,7 +273,6 @@ addon.locale = {}
 
 addon.locale.enEN = {
     -- Main panel
-    mainTitle = "My Addon Settings",
     mainHeader = "Main Settings",
     mainCheckbox = "Enable Main Feature",
     mainCheckboxTooltip = "Enable or disable the main feature",
