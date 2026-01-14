@@ -372,6 +372,9 @@ do -- Initialization
             }
         }
 
+        self.currentZone = self:GetCurrentZone()
+        self.previousZone = nil
+
         if self.LoadConfig then
             self:LoadConfig()
         end
@@ -547,8 +550,6 @@ do -- Zone Management
 
         if not self.zoneCallbacks then
             self.zoneCallbacks = {}
-            self.currentZone = nil
-            self.previousZone = nil
 
             local handleZoneChangeCallback = function(event, ...)
                 self:HandleZoneChange()
@@ -563,9 +564,7 @@ do -- Zone Management
             self:RegisterEvent("PLAYER_ROLES_ASSIGNED", handleZoneChangeCallback)
         end
 
-        local normalizedZoneName = zoneName:upper()
-
-        self.zoneCallbacks[normalizedZoneName] = enterCallback
+        self.zoneCallbacks[zoneName:lower()] = enterCallback
 
         local returnValue = true
         callHook(self, "AfterRegisterZone", returnValue)
@@ -604,26 +603,10 @@ do -- Zone Management
             return returnValue
         end
 
-        local newZone = self:GetCurrentZone()
-
-        -- Initialize currentZone if it's nil (first time through)
-        if self.currentZone == nil then
-            self.currentZone = newZone
-            self.previousZone = nil
-            
-            local returnValue = true
-            callHook(self, "AfterHandleZoneChange", returnValue)
-            return returnValue
-        end
-
-        if newZone == self.currentZone then
-            local returnValue = false
-            callHook(self, "AfterHandleZoneChange", returnValue)
-            return returnValue
-        end
+        local currentZone = self:GetCurrentZone()
 
         self.previousZone = self.currentZone
-        self.currentZone = newZone
+        self.currentZone = currentZone
 
         if self.zoneCallbacks and self.zoneCallbacks[self.currentZone] then
             local zoneName = self.currentZone:lower()
