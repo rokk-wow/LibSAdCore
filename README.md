@@ -451,6 +451,7 @@ These are the most commonly used functions available on the `self` object within
 - **`self:debug(text)`** - Only displays when "Enable Debugging" is enabled in settings
 - **`self:info(text)`** - Always displays (informational messages)
 - **`self:error(text)`** - Always displays (error messages)
+- **`self:dump(value, name)`** - Dumps a variable using DevTools_Dump for inspection (optional name parameter)
 
 ### Localization
 - **`self:L(key)`** - Returns the localized string for the given key based on client language

@@ -1767,6 +1767,16 @@ do -- Utility Functions
         return returnValue
     end
 
+    function addon:dump(value, name)
+        value, name = callHook(self, "BeforeDump", value, name)
+        
+        DevTools_Dump(value, name or self.addonName)
+        
+        local returnValue = true
+        callHook(self, "AfterDump", returnValue)
+        return returnValue
+    end
+
     function addon:RefreshSettingsPanels()
         callHook(self, "BeforeRefreshSettingsPanels")
 
