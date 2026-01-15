@@ -387,12 +387,12 @@ do -- Initialization
         self:RegisterEvent("PVP_MATCH_INACTIVE", handleZoneChangeCallback)
         self:RegisterEvent("PLAYER_ROLES_ASSIGNED", handleZoneChangeCallback)
 
+        self.author = self.author or "SAdCore Framework"
+        self:InitializeSavedVariables(savedVarsGlobal, savedVarsPerChar)
+
         if self.LoadConfig then
             self:LoadConfig()
         end
-
-        self.author = self.author or "SAdCore Framework"
-        self:InitializeSavedVariables(savedVarsGlobal, savedVarsPerChar)
 
         self.LibSerialize = LibStub("LibSerialize")
         self.LibCompress = LibStub("LibCompress")
@@ -1922,19 +1922,6 @@ do -- Utility Functions
         end
 
         local importedSettings = data.settings
-
-        self:debug("===== IMPORTED SETTINGS =====")
-        for key, value in pairs(importedSettings) do
-            if type(value) == "table" then
-                self:debug("  " .. tostring(key) .. " = table:")
-                for innerKey, innerValue in pairs(value) do
-                    self:debug("    " .. tostring(innerKey) .. " = " .. tostring(innerValue) .. " (type: " .. type(innerValue) .. ")")
-                end
-            else
-                self:debug("  " .. tostring(key) .. " = " .. tostring(value) .. " (type: " .. type(value) .. ")")
-            end
-        end
-        self:debug("=============================")
 
         self:debug("Clearing current settings and importing...")
         for key in pairs(self.settings) do
