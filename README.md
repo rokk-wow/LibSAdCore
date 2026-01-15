@@ -467,7 +467,37 @@ These are the most commonly used functions available on the `self` object within
 - **`self:OpenSettings()`** - Opens the addon settings panel
 
 ### Utilities
-- **`self:ShowDialog(title, message, onAccept, onCancel)`** - Display a confirmation dialog
+- **`self:ShowDialog(dialogOptions)`** - Display a custom dialog with optional controls
+  - `dialogOptions` - A table containing:
+    - `title` - The dialog title (localization key)
+    - `controls` - Array of control configurations (optional)
+    - `width` - Custom dialog width in pixels (optional, defaults to 500)
+    - `height` - Custom dialog height in pixels (optional, auto-calculated based on content)
+    - `onClose` - Callback function when dialog is closed (optional)
+
+**Example:**
+```lua
+-- Simple dialog with just a title and close button
+self:ShowDialog({
+    title = "myDialogTitle"
+})
+
+-- Dialog with controls
+self:ShowDialog({
+    title = "myDialogTitle",
+    controls = {
+        {
+            type = "inputBox",
+            name = "userInput",
+            default = "Enter text here",
+            highlightText = true
+        }
+    },
+    onClose = function()
+        self:info("Dialog closed")
+    end
+})
+```
 
 
 ## Hooks
