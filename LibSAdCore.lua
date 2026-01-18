@@ -217,7 +217,7 @@ end
 --[[============================================================================
     SAdCore - Simple Addon Core
 ==============================================================================]]
-local SADCORE_MAJOR, SADCORE_MINOR = "SAdCore-1", 2
+local SADCORE_MAJOR, SADCORE_MINOR = "SAdCore-1", 3
 local SAdCore, oldminor = LibStub:NewLibrary(SADCORE_MAJOR, SADCORE_MINOR)
 if not SAdCore then
     return
@@ -303,7 +303,7 @@ do -- Initialization
         self.config = self.config or {}
         self.config.settings = self.config.settings or {}
         self.sadCore = self.sadCore or {}
-        self.sadCore.version = "1.1"
+        self.sadCore.version = SADCORE_MAJOR:match("%d+") .. "." .. SADCORE_MINOR
         self.apiVersion = select(4, GetBuildInfo())
 
         local clientLocale = GetLocale()
