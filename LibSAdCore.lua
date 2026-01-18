@@ -802,13 +802,13 @@ do -- Settings Panels
     function addon:_BuildChildSettingsPanel(panelKey)
         panelKey = callHook(self, "BeforeBuildChildSettingsPanel", panelKey)
 
-        local panel = self:BuildSettingsPanelHelper(panelKey, self.config.settings[panelKey])
+        local panel = self:_BuildSettingsPanelHelper(panelKey, self.config.settings[panelKey])
 
         callHook(self, "AfterBuildChildSettingsPanel", panel)
         return panel
     end
 
-    function addon:CreateSettingsPanel(panelKey)
+    function addon:_CreateSettingsPanel(panelKey)
         panelKey = callHook(self, "BeforeCreateSettingsPanel", panelKey)
 
         local panel = CreateFrame("Frame", self.addonName .. "_" .. panelKey .. "_Panel")
