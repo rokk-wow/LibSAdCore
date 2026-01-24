@@ -217,7 +217,7 @@ end
 --[[============================================================================
     SAdCore - Simple Addon Core
 ==============================================================================]]
-local SADCORE_MAJOR, SADCORE_MINOR = "SAdCore-1", 12
+local SADCORE_MAJOR, SADCORE_MINOR = "SAdCore-1", 13
 local SAdCore, oldminor = LibStub:NewLibrary(SADCORE_MAJOR, SADCORE_MINOR)
 if not SAdCore then
     return
@@ -306,6 +306,7 @@ do -- Initialize
 
         self.sadCore = self.sadCore or {}
         self.sadCore.panels = self.sadCore.panels or {}
+        self.sadCore.panelOrder = self.sadCore.panelOrder or {}
         self.sadCore.version = SADCORE_MAJOR:match("%d+") .. "." .. SADCORE_MINOR
         self.apiVersion = select(4, GetBuildInfo())
 
@@ -516,6 +517,33 @@ do -- Registration functions
 
         local returnValue = true
         callHook(self, "AfterRegisterSlashCommand", returnValue)
+        return returnValue
+    end
+
+    function addon:AddSettingsPanel(panelKey, panelConfig)
+        panelKey, panelConfig = callHook(self, "BeforeAddSettingsPanel", panelKey, panelConfig)
+
+        assert(panelKey ~= "main", "Cannot use AddSettingsPanel for 'main' panel. Use self.sadCore.panels.main = {...} instead.")
+        assert(not self.sadCore.panels[panelKey], string.format("Panel '%s' already exists. Each panel key must be unique.", panelKey))
+
+        self.sadCore.panels = self.sadCore.panels or {}
+        self.sadCore.panelOrder = self.sadCore.panelOrder or {}
+        self.sadCore.panels[panelKey] = panelConfig
+        
+        local alreadyTracked = false
+        for _, key in ipairs(self.sadCore.panelOrder) do
+            if key == panelKey then
+                alreadyTracked = true
+                break
+            end
+        end
+        
+        if not alreadyTracked then
+            table.insert(self.sadCore.panelOrder, panelKey)
+        end
+
+        local returnValue = true
+        callHook(self, "AfterAddSettingsPanel", returnValue)
         return returnValue
     end
 
@@ -734,15 +762,7 @@ do -- Settings Panels
         Settings.RegisterAddOnCategory(self.settingsCategory)
         self.settingsPanels["main"] = self.mainSettingsPanel
 
-        local sortedPanelKeys = {}
-        for panelKey in pairs(self.sadCore.panels) do
-            if panelKey ~= "main" then
-                table.insert(sortedPanelKeys, panelKey)
-            end
-        end
-        table.sort(sortedPanelKeys)
-
-        for _, panelKey in ipairs(sortedPanelKeys) do
+        for _, panelKey in ipairs(self.sadCore.panelOrder) do
             local panelConfig = self.sadCore.panels[panelKey]
             local childPanel = self:_BuildChildSettingsPanel(panelKey)
             if childPanel then

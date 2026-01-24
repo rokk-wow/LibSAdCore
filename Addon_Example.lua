@@ -39,7 +39,7 @@ function addon:Initialize()
     }
 
     -- Example - Add a New Child Settings Panel
-    self.sadCore.panels.examplePanel = {
+    self:AddSettingsPanel("examplePanel", {
         title = "examplePanelTitle",
         controls = {
             {
@@ -53,7 +53,7 @@ function addon:Initialize()
                 onValueChange = self.examplePanelCheckbox
             },
         }
-    }
+    })
     
     -- Example - Register event to demonstrate accessing savedVars
     self:RegisterEvent("PLAYER_ENTERING_WORLD", self.OnPlayerEnteringWorld)

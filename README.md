@@ -90,7 +90,7 @@ SAddons are:
        }
        
        -- Example - Add a New Child Settings Panel
-       self.sadCore.panels.examplePanel = {
+       self:AddSettingsPanel("examplePanel", {
            title = "examplePanelTitle",
            controls = {
                {
@@ -104,7 +104,7 @@ SAddons are:
                    onValueChange = self.examplePanelCheckbox
                }
            }
-       }
+       })
    end
    
    function addon:exampleCheckbox(isChecked)
@@ -220,7 +220,7 @@ function addon:Initialize()
     }
     
     -- Child Settings Panel
-    self.sadCore.panels.advancedPanel = {
+    self:AddSettingsPanel("advancedPanel", {
         title = "advancedTitle",
         controls = {
             {
@@ -234,7 +234,7 @@ function addon:Initialize()
                 onValueChange = self.advancedCheckbox
             }
         }
-    }
+    })
 end
 
 -- Callback Functions
