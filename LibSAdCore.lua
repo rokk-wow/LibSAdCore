@@ -217,7 +217,7 @@ end
 --[[============================================================================
     SAdCore - Simple Addon Core
 ==============================================================================]]
-local SADCORE_MAJOR, SADCORE_MINOR = "SAdCore-1", 11
+local SADCORE_MAJOR, SADCORE_MINOR = "SAdCore-1", 12
 local SAdCore, oldminor = LibStub:NewLibrary(SADCORE_MAJOR, SADCORE_MINOR)
 if not SAdCore then
     return
@@ -1025,15 +1025,31 @@ do -- Controls
                 
                 if option.icon then
                     info.icon = option.icon
-                    info.iconInfo = {
-                        tCoordLeft = 0,
-                        tCoordRight = 1,
-                        tCoordTop = 0,
-                        tCoordBottom = 1,
-                        tSizeX = 16,
-                        tSizeY = 16,
-                        tFitDropDownSizeX = true
-                    }
+                    
+                    -- Get atlas info to respect original dimensions
+                    local atlasInfo = C_Texture.GetAtlasInfo(option.icon)
+                    if atlasInfo then
+                        info.iconInfo = {
+                            tCoordLeft = atlasInfo.leftTexCoord,
+                            tCoordRight = atlasInfo.rightTexCoord,
+                            tCoordTop = atlasInfo.topTexCoord,
+                            tCoordBottom = atlasInfo.bottomTexCoord,
+                            tSizeX = atlasInfo.width,
+                            tSizeY = atlasInfo.height,
+                            tFitDropDownSizeX = false  -- Don't stretch to fit
+                        }
+                    else
+                        -- Fallback for non-atlas textures (file paths)
+                        info.iconInfo = {
+                            tCoordLeft = 0,
+                            tCoordRight = 1,
+                            tCoordTop = 0,
+                            tCoordBottom = 1,
+                            tSizeX = 16,
+                            tSizeY = 16,
+                            tFitDropDownSizeX = false
+                        }
+                    end
                 end
                 
                 info.func = function(self)
