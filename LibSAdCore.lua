@@ -1022,6 +1022,20 @@ do -- Controls
                 local info = UIDropDownMenu_CreateInfo()
                 info.text = addonInstance:L(option.label)
                 info.value = option.value
+                
+                if option.icon then
+                    info.icon = option.icon
+                    info.iconInfo = {
+                        tCoordLeft = 0,
+                        tCoordRight = 1,
+                        tCoordTop = 0,
+                        tCoordBottom = 1,
+                        tSizeX = 16,
+                        tSizeY = 16,
+                        tFitDropDownSizeX = true
+                    }
+                end
+                
                 info.func = function(self)
                     if sessionOnly ~= true then
                         addonInstance.savedVars[panelKey][name] = self.value

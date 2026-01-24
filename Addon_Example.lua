@@ -24,6 +24,17 @@ function addon:Initialize()
                 default = true,
                 onValueChange = self.exampleCheckbox
             },
+            {
+                type = "dropdown",
+                name = "exampleDropdown",
+                default = "healer",
+                options = {
+                    {value = "tank", label = "tankRole", icon = "roleicon-tiny-tank"},
+                    {value = "healer", label = "healerRole", icon = "roleicon-tiny-healer"},
+                    {value = "dps", label = "dpsRole", icon = "roleicon-tiny-dps"}
+                },
+                onValueChange = self.exampleDropdown
+            },
         }
     }
 
@@ -65,6 +76,10 @@ function addon:exampleCheckbox(isChecked)
     self:Debug(addonName .. ": " .. tostring(isChecked))
 end
 
+function addon:exampleDropdown(selectedValue)
+    self:Info("Role selected: " .. selectedValue)
+end
+
 function addon:examplePanelCheckbox(isChecked)
     self:Info("Checkbox changed to: " .. tostring(isChecked))
 end
@@ -83,6 +98,11 @@ addon.locale.enEN = {
     exampleHeader = "Example Settings",
     exampleCheckbox = "Example Checkbox on Main Settings",
     exampleCheckboxTooltip = "Tooltip for example checkbox control",
+    exampleDropdown = "Select Your Role",
+    exampleDropdownTooltip = "Choose your preferred role with icon preview",
+    tankRole = "Tank",
+    healerRole = "Healer",
+    dpsRole = "DPS",
 
     -- Custom panel localization strings
     examplePanelTitle = "Example Panel Settings",

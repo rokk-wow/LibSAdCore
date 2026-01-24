@@ -318,6 +318,39 @@ To create a control that only exists for the current game session (and is reset 
 
 To add a tooltip, define a localization key with the control's name + `"Tooltip"` (e.g., `"exampleCheckboxTooltip"` for `name = "exampleCheckbox"`).
 
+### Dropdown Icons
+
+Dropdown options support optional icons to provide visual previews. Icons can be atlas textures or file paths.
+
+**Basic dropdown (no icons):**
+```lua
+{
+    type = "dropdown",
+    name = "myDropdown",
+    default = "option1",
+    options = {
+        {value = "option1", label = "dropdownOption1"},
+        {value = "option2", label = "dropdownOption2"}
+    }
+}
+```
+
+**Dropdown with icons:**
+```lua
+{
+    type = "dropdown",
+    name = "roleDropdown",
+    default = "healer",
+    options = {
+        {value = "tank", label = "tankRole", icon = "roleicon-tiny-tank"},
+        {value = "healer", label = "healerRole", icon = "roleicon-tiny-healer"},
+        {value = "dps", label = "dpsRole", icon = "roleicon-tiny-dps"}
+    }
+}
+```
+
+Icons are displayed next to each option in the dropdown menu, making it easier for players to identify selections visually. If an icon is not provided for an option, it will display as text-only.
+
 ## Accessing Saved Settings
 
 Control values are automatically persisted and can be accessed through `self.savedVars` organized by panel key. Access control values using `self.savedVars.panelKey.controlName`. Note that controls marked with `sessionOnly = true` will not be available in `self.savedVars` as they are not persisted.
