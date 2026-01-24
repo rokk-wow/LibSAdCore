@@ -1057,6 +1057,20 @@ do -- Controls
             end
         end
 
+        local tooltipKey = name .. "Tooltip"
+        local tooltipText = addonInstance:L(tooltipKey)
+        if tooltipText ~= "[" .. tooltipKey .. "]" then
+            dropdown.Dropdown:SetScript("OnEnter", function(self)
+                GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+                GameTooltip:SetText(addonInstance:L(name), 1, 1, 1)
+                GameTooltip:AddLine(tooltipText, nil, nil, nil, true)
+                GameTooltip:Show()
+            end)
+            dropdown.Dropdown:SetScript("OnLeave", function(self)
+                GameTooltip:Hide()
+            end)
+        end
+
         local newYOffset = yOffset - self.sadCore.ui.spacing.controlHeight
         callHook(self, "AfterAddDropdown", dropdown, newYOffset)
         return dropdown, newYOffset
