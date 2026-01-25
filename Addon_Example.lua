@@ -60,12 +60,24 @@ function addon:Initialize()
 end
 
 function addon:OnPlayerEnteringWorld()
-    -- Example: Access UI control values from savedVars
+    -- Example: Direct access (no validation - risky if SavedVariables is corrupted)
     local mainCheckbox = self.savedVars.main.exampleCheckbox
     local panelCheckbox = self.savedVars.examplePanel.examplePanelCheckbox
     
     print(string.format("%s: Main checkbox is %s", addonName, tostring(mainCheckbox)))
     print(string.format("%s: Panel checkbox is %s", addonName, tostring(panelCheckbox)))
+    
+    -- Example: Safe access with GetValue() - validates values against control definitions
+    local validatedCheckbox = self:GetValue("main", "exampleCheckbox")
+    local validatedDropdown = self:GetValue("main", "exampleDropdown")
+    
+    if validatedCheckbox then
+        print(string.format("%s: Main checkbox validated as %s", addonName, tostring(validatedCheckbox)))
+    end
+    
+    if validatedDropdown then
+        print(string.format("%s: Dropdown role validated as %s", addonName, validatedDropdown))
+    end
     
     -- Example: Access custom data from savedVars.data
     self.savedVars.data.loginCount = (self.savedVars.data.loginCount or 0) + 1

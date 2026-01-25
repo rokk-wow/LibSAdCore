@@ -366,6 +366,23 @@ function addon:PrintDebuggingStatus()
 end
 ```
 
+### Safe Value Retrieval with `addon:GetValue()`
+
+Use `addon:GetValue(panel, settingName)` to retrieve saved variables with validation. This protects against corrupted SavedVariables files by validating values against control definitions and returning the saved value, default value, or `nil`.
+
+**Example:**
+```lua
+-- Direct access (no validation)
+local enabled = self.savedVars.main.enableFeature
+local scale = self.savedVars.main.uiScale
+local icon = self.savedVars.main.selectIcon
+
+-- Validated access (safe)
+local enabled = self:GetValue("main", "enableFeature")  -- guaranteed boolean or nil
+local scale = self:GetValue("main", "uiScale") or 1.0   -- guaranteed valid number or default
+local icon = self:GetValue("main", "selectIcon")        -- guaranteed valid option or nil
+```
+
 ## Storing Custom Data
 
 Need to save data without creating UI controls? Use the reserved `self.savedVars.data` namespace. This table is automatically initialized and included in saved variables, export/import, and profile switching.

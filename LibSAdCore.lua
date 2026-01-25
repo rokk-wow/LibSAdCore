@@ -217,7 +217,7 @@ end
 --[[============================================================================
     SAdCore - Simple Addon Core
 ==============================================================================]]
-local SADCORE_MAJOR, SADCORE_MINOR = "SAdCore-1", 14
+local SADCORE_MAJOR, SADCORE_MINOR = "SAdCore-1", 15
 local SAdCore, oldminor = LibStub:NewLibrary(SADCORE_MAJOR, SADCORE_MINOR)
 if not SAdCore then
     return
@@ -1764,6 +1764,126 @@ do -- Controls
 end
 
 do -- Utility Functions
+
+    function addon:GetValue(panel, settingName)
+        panel, settingName = callHook(self, "BeforeGetValue", panel, settingName)
+
+        if not panel or not settingName then
+            callHook(self, "AfterGetValue", nil)
+            return nil
+        end
+
+        local savedValue = nil
+        if self.savedVars and self.savedVars[panel] then
+            savedValue = self.savedVars[panel][settingName]
+        end
+
+        local controlConfig = nil
+        if self.sadCore and self.sadCore.panels and self.sadCore.panels[panel] then
+            local panelConfig = self.sadCore.panels[panel]
+            if panelConfig.controls then
+                for _, control in ipairs(panelConfig.controls) do
+                    if control.name == settingName then
+                        controlConfig = control
+                        break
+                    end
+                end
+            end
+        end
+
+        if not controlConfig then
+            callHook(self, "AfterGetValue", savedValue)
+            return savedValue
+        end
+
+        local defaultValue = controlConfig.default
+        local controlType = controlConfig.type
+
+        if controlType == "checkbox" then
+            if type(savedValue) == "boolean" then
+                callHook(self, "AfterGetValue", savedValue)
+                return savedValue
+            elseif type(defaultValue) == "boolean" then
+                callHook(self, "AfterGetValue", defaultValue)
+                return defaultValue
+            else
+                callHook(self, "AfterGetValue", nil)
+                return nil
+            end
+
+        elseif controlType == "dropdown" then
+            if controlConfig.options and type(controlConfig.options) == "table" then
+                if savedValue ~= nil then
+                    for _, option in ipairs(controlConfig.options) do
+                        if option.value == savedValue then
+                            callHook(self, "AfterGetValue", savedValue)
+                            return savedValue
+                        end
+                    end
+                end
+                if defaultValue ~= nil then
+                    for _, option in ipairs(controlConfig.options) do
+                        if option.value == defaultValue then
+                            callHook(self, "AfterGetValue", defaultValue)
+                            return defaultValue
+                        end
+                    end
+                end
+            end
+            callHook(self, "AfterGetValue", nil)
+            return nil
+
+        elseif controlType == "slider" then
+            local minValue = controlConfig.min
+            local maxValue = controlConfig.max
+            
+            if type(savedValue) == "number" and minValue and maxValue then
+                local clampedValue = math.max(minValue, math.min(maxValue, savedValue))
+                callHook(self, "AfterGetValue", clampedValue)
+                return clampedValue
+            elseif type(defaultValue) == "number" and minValue and maxValue then
+                local clampedDefault = math.max(minValue, math.min(maxValue, defaultValue))
+                callHook(self, "AfterGetValue", clampedDefault)
+                return clampedDefault
+            else
+                callHook(self, "AfterGetValue", nil)
+                return nil
+            end
+
+        elseif controlType == "colorPicker" then
+            if type(savedValue) == "string" and savedValue:match("^#%x%x%x%x%x%x%x?%x?$") then
+                callHook(self, "AfterGetValue", savedValue)
+                return savedValue
+            elseif type(defaultValue) == "string" and defaultValue:match("^#%x%x%x%x%x%x%x?%x?$") then
+                callHook(self, "AfterGetValue", defaultValue)
+                return defaultValue
+            else
+                callHook(self, "AfterGetValue", nil)
+                return nil
+            end
+
+        elseif controlType == "inputBox" then
+            if type(savedValue) == "string" then
+                callHook(self, "AfterGetValue", savedValue)
+                return savedValue
+            elseif savedValue == nil and defaultValue ~= nil then
+                callHook(self, "AfterGetValue", defaultValue)
+                return defaultValue
+            else
+                callHook(self, "AfterGetValue", nil)
+                return nil
+            end
+
+        else
+            if savedValue ~= nil then
+                callHook(self, "AfterGetValue", savedValue)
+                return savedValue
+            else
+                callHook(self, "AfterGetValue", defaultValue)
+                return defaultValue
+            end
+        end
+    end
 
     function addon:HexToRGB(hex)
         hex = hex:gsub("#", "")
