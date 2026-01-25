@@ -1091,6 +1091,14 @@ do -- Controls
 
         UIDropDownMenu_Initialize(dropdown.Dropdown, initializeFunc)
         UIDropDownMenu_SetSelectedValue(dropdown.Dropdown, currentValue or defaultValue)
+        
+        local selectedValue = currentValue or defaultValue
+        for _, option in ipairs(options) do
+            if option.value == selectedValue then
+                UIDropDownMenu_SetText(dropdown.Dropdown, addonInstance:L(option.label))
+                break
+            end
+        end
 
         if onValueChange then
             onValueChange(addonInstance, currentValue or defaultValue)
@@ -1104,6 +1112,13 @@ do -- Controls
                     value = defaultValue
                 end
                 UIDropDownMenu_SetSelectedValue(dropdown.Dropdown, value)
+                
+                for _, option in ipairs(options) do
+                    if option.value == value then
+                        UIDropDownMenu_SetText(dropdown.Dropdown, addonInstance:L(option.label))
+                        break
+                    end
+                end
             end
         end
 
