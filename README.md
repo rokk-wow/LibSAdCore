@@ -522,6 +522,23 @@ end
 
 If called during combat, the function is queued. When combat ends, it executes automatically. If called outside combat, it executes immediately.
 
+## Secret-Safe Functions
+
+Some WoW API calls return "secret values" in PvP contexts that cannot be used with UI operations. SAdCore provides `SecureCall()` to automatically replace secret values with `nil`.
+
+### Example
+
+```lua
+function addon:UpdateArenaHealth()
+    local health = self:SecureCall(UnitHealth, "arena1")
+    if health then
+        self:Info("Health: " .. health)
+    end
+end
+```
+
+Secret values are replaced with `nil`, safe values pass through unchanged. Supports up to 20 return values.
+
 ## Zone Management
 
 SAdCore provides automatic zone detection and callbacks. This feature is designed for addons that want to take advantage of zone-based behavior (like chat filters or UI visibility in different zones).
@@ -632,4 +649,3 @@ end
 ```
 
 All available hooks follow the pattern: `Before[FunctionName]` and `After[FunctionName]`. See `LibSAdCore.lua` for the complete list.
-

@@ -219,7 +219,7 @@ end
 ==============================================================================]]
 
 -- SAdCore Version
-local SADCORE_MAJOR, SADCORE_MINOR = "SAdCore-1", 16
+local SADCORE_MAJOR, SADCORE_MINOR = "SAdCore-1", 17
 
 local SAdCore, oldminor = LibStub:NewLibrary(SADCORE_MAJOR, SADCORE_MINOR)
 if not SAdCore then
@@ -2210,6 +2210,71 @@ do -- Combat Queue System
         return true
     end
 
+    function addon:SecureCall(func, ...)
+        callHook(self, "BeforeSecureCall", func)
+
+        if type(func) ~= "function" then
+            self:Error(self:L("core_secureCallRequiresFunction"))
+            callHook(self, "AfterSecureCall", false)
+            return false
+        end
+
+        -- Create test frame if it doesn't exist
+        if not self.secretTestFrame then
+            self.secretTestFrame = CreateFrame("EditBox")
+            self.secretTestFrame:Hide()
+        end
+
+        -- Call the function with pcall to catch any errors
+        local success, ret1, ret2, ret3, ret4, ret5, ret6, ret7, ret8, ret9, ret10, ret11, ret12, ret13, ret14, ret15, ret16, ret17, ret18, ret19, ret20 = pcall(func, ...)
+
+        if not success then
+            -- Function failed, return nil values
+            callHook(self, "AfterSecureCall", nil)
+            return nil
+        end
+
+        -- Test and sanitize each return value
+        local function makeSafe(value)
+            if value == nil then
+                return nil
+            end
+
+            local isSafe = pcall(function()
+                local str = tostring(value)
+                self.secretTestFrame:SetText(str)
+            end)
+
+            self.secretTestFrame:ClearFocus()
+
+            return isSafe and value or nil
+        end
+
+        local safeRet1 = makeSafe(ret1)
+        local safeRet2 = makeSafe(ret2)
+        local safeRet3 = makeSafe(ret3)
+        local safeRet4 = makeSafe(ret4)
+        local safeRet5 = makeSafe(ret5)
+        local safeRet6 = makeSafe(ret6)
+        local safeRet7 = makeSafe(ret7)
+        local safeRet8 = makeSafe(ret8)
+        local safeRet9 = makeSafe(ret9)
+        local safeRet10 = makeSafe(ret10)
+        local safeRet11 = makeSafe(ret11)
+        local safeRet12 = makeSafe(ret12)
+        local safeRet13 = makeSafe(ret13)
+        local safeRet14 = makeSafe(ret14)
+        local safeRet15 = makeSafe(ret15)
+        local safeRet16 = makeSafe(ret16)
+        local safeRet17 = makeSafe(ret17)
+        local safeRet18 = makeSafe(ret18)
+        local safeRet19 = makeSafe(ret19)
+        local safeRet20 = makeSafe(ret20)
+
+        callHook(self, "AfterSecureCall", safeRet1, safeRet2, safeRet3, safeRet4, safeRet5, safeRet6, safeRet7, safeRet8, safeRet9, safeRet10, safeRet11, safeRet12, safeRet13, safeRet14, safeRet15, safeRet16, safeRet17, safeRet18, safeRet19, safeRet20)
+        return safeRet1, safeRet2, safeRet3, safeRet4, safeRet5, safeRet6, safeRet7, safeRet8, safeRet9, safeRet10, safeRet11, safeRet12, safeRet13, safeRet14, safeRet15, safeRet16, safeRet17, safeRet18, safeRet19, safeRet20
+    end
+
     function addon:_ProcessCombatQueue()
         callHook(self, "BeforeProcessCombatQueue")
 
@@ -2299,7 +2364,8 @@ do -- Localization
         core_combatSafeRequiresFunction = "CombatSafe requires a function as parameter",
         core_combatSafeFunctionError = "Combat safe function error",
         core_actionQueuedForCombat = "Action queued for after combat",
-        core_queuedActionFailed = "Combat safe queued action failed"
+        core_queuedActionFailed = "Combat safe queued action failed",
+        core_secureCallRequiresFunction = "SecureCall requires a function as parameter"
     }
 
     -- Spanish
@@ -2333,7 +2399,8 @@ do -- Localization
         core_combatSafeRequiresFunction = "CombatSafe requiere una función como parámetro",
         core_combatSafeFunctionError = "Error en función protegida contra combate",
         core_actionQueuedForCombat = "Acción en cola para después del combate",
-        core_queuedActionFailed = "Acción en cola falló"
+        core_queuedActionFailed = "Acción en cola falló",
+        core_secureCallRequiresFunction = "SecureCall requiere una función como parámetro"
     }
 
     SAdCore.prototype.locale.esMX = SAdCore.prototype.locale.esES
@@ -2369,7 +2436,8 @@ do -- Localization
         core_combatSafeRequiresFunction = "CombatSafe requer uma função como parâmetro",
         core_combatSafeFunctionError = "Erro na função protegida contra combate",
         core_actionQueuedForCombat = "Ação enfileirada para depois do combate",
-        core_queuedActionFailed = "Ação enfileirada falhou"
+        core_queuedActionFailed = "Ação enfileirada falhou",
+        core_secureCallRequiresFunction = "SecureCall requer uma função como parâmetro"
     }
 
     -- French
@@ -2398,7 +2466,13 @@ do -- Localization
         core_authorName = "Appuyez sur CTRL + C pour Copier",
         core_errorConfigHelp1 = "Erreur de configuration de SavedVariables détectée.",
         core_errorConfigHelp2 = "Tous les noms de variables doivent contenir le nom de l'addon pour garantir l'unicité entre tous les addons.",
-        core_errorConfigExample = "Exemple de configuration pour l'addon"
+        core_errorConfigExample = "Exemple de configuration pour l'addon",
+        core_cannotOpenInCombat = "Impossible d'ouvrir les paramètres en combat.",
+        core_combatSafeRequiresFunction = "CombatSafe nécessite une fonction comme paramètre",
+        core_combatSafeFunctionError = "Erreur de fonction sécurisée contre le combat",
+        core_actionQueuedForCombat = "Action mise en file d'attente pour après le combat",
+        core_queuedActionFailed = "Action en file d'attente échouée",
+        core_secureCallRequiresFunction = "SecureCall nécessite une fonction comme paramètre"
     }
 
     -- German
@@ -2427,7 +2501,13 @@ do -- Localization
         core_authorName = "Drücken Sie STRG + C zum Kopieren",
         core_errorConfigHelp1 = "SavedVariables-Konfigurationsfehler erkannt.",
         core_errorConfigHelp2 = "Alle Variablennamen müssen den Addon-Namen enthalten, um Eindeutigkeit über alle Addons hinweg zu gewährleisten.",
-        core_errorConfigExample = "Beispielkonfiguration für Addon"
+        core_errorConfigExample = "Beispielkonfiguration für Addon",
+        core_cannotOpenInCombat = "Einstellungen können im Kampf nicht geöffnet werden.",
+        core_combatSafeRequiresFunction = "CombatSafe benötigt eine Funktion als Parameter",
+        core_combatSafeFunctionError = "Kampfsichere Funktionsfehler",
+        core_actionQueuedForCombat = "Aktion für nach dem Kampf in Warteschlange gestellt",
+        core_queuedActionFailed = "Warteschlangenaktion fehlgeschlagen",
+        core_secureCallRequiresFunction = "SecureCall benötigt eine Funktion als Parameter"
     }
 
     -- Russian
@@ -2456,23 +2536,13 @@ do -- Localization
         core_authorName = "Нажмите CTRL + C для копирования",
         core_errorConfigHelp1 = "Обнаружена ошибка конфигурации SavedVariables.",
         core_errorConfigHelp2 = "Все имена переменных должны содержать имя аддона для обеспечения уникальности среди всех аддонов.",
-        core_errorConfigExample = "Пример конфигурации для аддона"
+        core_errorConfigExample = "Пример конфигурации для аддона",
+        core_cannotOpenInCombat = "Невозможно открыть настройки в бою.",
+        core_combatSafeRequiresFunction = "CombatSafe требует функцию в качестве параметра",
+        core_combatSafeFunctionError = "Ошибка защищенной от боя функции",
+        core_actionQueuedForCombat = "Действие поставлено в очередь после боя",
+        core_queuedActionFailed = "Действие из очереди не выполнено",
+        core_secureCallRequiresFunction = "SecureCall требует функцию в качестве параметра"
     }
 
 end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
