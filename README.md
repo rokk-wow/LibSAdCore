@@ -539,6 +539,25 @@ end
 
 Secret values are replaced with `nil`, safe values pass through unchanged. Supports up to 20 return values.
 
+## Retry Functions
+
+Some operations may fail temporarily and need to be retried (e.g., waiting for frames to load, API calls that return incomplete data). SAdCore provides `Retry()` to automatically retry a function until it succeeds or reaches the maximum retry limit. Retry will run the function after a short delay until the function either returns `true`, or the maximum retry count is reached.
+
+### Example
+
+```lua
+function addon:WaitForFrame()
+    self:Retry(function()
+        if MyFrame and MyFrame:IsShown() then
+            -- Frame is ready, do something
+            MyFrame:SetAlpha(1.0)
+            return true  -- Success! Stop retrying
+        end
+        -- Frame not ready yet, will retry
+    end)
+end
+```
+
 ## Zone Management
 
 SAdCore provides automatic zone detection and callbacks. This feature is designed for addons that want to take advantage of zone-based behavior (like chat filters or UI visibility in different zones).
@@ -580,6 +599,11 @@ These are the most commonly used functions available on the `self` object within
 
 ### Settings
 - **`self:OpenSettings()`** - Opens the addon settings panel
+
+### Combat & Safety Functions
+- **`self:CombatSafe(func)`** - Queues a function to execute after combat ends (or immediately if not in combat)
+- **`self:SecureCall(func, ...)`** - Calls a function and replaces any secret values in return values with `nil`
+- **`self:Retry(func)`** - Retries a function until it returns `true` or maximum attempts is reached
 
 ### Color Utilities
 - **`self:hexToRGB(hex)`** - Converts hex color string to RGB values (returns r, g, b, a)

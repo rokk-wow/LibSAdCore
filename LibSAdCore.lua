@@ -219,7 +219,7 @@ end
 ==============================================================================]]
 
 -- SAdCore Version
-local SADCORE_MAJOR, SADCORE_MINOR = "SAdCore-1", 17
+local SADCORE_MAJOR, SADCORE_MINOR = "SAdCore-1", 18
 
 local SAdCore, oldminor = LibStub:NewLibrary(SADCORE_MAJOR, SADCORE_MINOR)
 if not SAdCore then
@@ -330,6 +330,11 @@ do -- Initialize
         end
 
         self.localization = self.locale[clientLocale] or self.locale.enEN
+
+        self.sadCore.config = self.sadCore.config or {
+            retryDelay = .1,
+            retryMaxAttempts = 50
+        }
 
         self.sadCore.ui = self.sadCore.ui or {
             spacing = {
@@ -1048,7 +1053,6 @@ do -- Controls
                 if option.icon then
                     info.icon = option.icon
                     
-                    -- Get atlas info to respect original dimensions
                     local atlasInfo = C_Texture.GetAtlasInfo(option.icon)
                     if atlasInfo then
                         info.iconInfo = {
@@ -1061,7 +1065,6 @@ do -- Controls
                             tFitDropDownSizeX = false  -- Don't stretch to fit
                         }
                     else
-                        -- Fallback for non-atlas textures (file paths)
                         info.iconInfo = {
                             tCoordLeft = 0,
                             tCoordRight = 1,
@@ -2174,6 +2177,57 @@ do -- Combat Queue System
         return returnValue
     end
 
+    function addon:Retry(func)
+        func = callHook(self, "BeforeRetry", func)
+
+        if type(func) ~= "function" then
+            self:Error(self:L("core_retryRequiresFunction"))
+            callHook(self, "AfterRetry", false)
+            return false
+        end
+
+        local addonInstance = self
+        local retryDelay = self.sadCore.config.retryDelay or 0.1
+        local retryMaxAttempts = self.sadCore.config.retryMaxAttempts or 50
+        local currentAttempt = 0
+
+        local function attemptExecution()
+            currentAttempt = currentAttempt + 1
+            
+            local success, result = pcall(func, addonInstance)
+            
+            if not success then
+                addonInstance:Debug("Retry attempt " .. currentAttempt .. " failed with error: " .. tostring(result))
+                if currentAttempt < retryMaxAttempts then
+                    C_Timer.After(retryDelay, attemptExecution)
+                else
+                    addonInstance:Debug("Retry max attempts (" .. retryMaxAttempts .. ") reached")
+                    callHook(addonInstance, "AfterRetry", false)
+                end
+                return
+            end
+
+            if result == true then
+                addonInstance:Debug("Retry succeeded on attempt " .. currentAttempt)
+                callHook(addonInstance, "AfterRetry", true)
+                return
+            end
+
+            if currentAttempt < retryMaxAttempts then
+                addonInstance:Debug("Retry attempt " .. currentAttempt .. " returned " .. tostring(result) .. ", retrying...")
+                C_Timer.After(retryDelay, attemptExecution)
+            else
+                addonInstance:Debug("Retry max attempts (" .. retryMaxAttempts .. ") reached without success")
+                callHook(addonInstance, "AfterRetry", false)
+            end
+        end
+
+        attemptExecution()
+
+        callHook(self, "AfterRetry", true)
+        return true
+    end
+
     function addon:CombatSafe(func)
         callHook(self, "BeforeCombatSafe", func)
 
@@ -2219,22 +2273,18 @@ do -- Combat Queue System
             return false
         end
 
-        -- Create test frame if it doesn't exist
         if not self.secretTestFrame then
             self.secretTestFrame = CreateFrame("EditBox")
             self.secretTestFrame:Hide()
         end
 
-        -- Call the function with pcall to catch any errors
         local success, ret1, ret2, ret3, ret4, ret5, ret6, ret7, ret8, ret9, ret10, ret11, ret12, ret13, ret14, ret15, ret16, ret17, ret18, ret19, ret20 = pcall(func, ...)
 
         if not success then
-            -- Function failed, return nil values
             callHook(self, "AfterSecureCall", nil)
             return nil
         end
 
-        -- Test and sanitize each return value
         local function makeSafe(value)
             if value == nil then
                 return nil
@@ -2365,7 +2415,8 @@ do -- Localization
         core_combatSafeFunctionError = "Combat safe function error",
         core_actionQueuedForCombat = "Action queued for after combat",
         core_queuedActionFailed = "Combat safe queued action failed",
-        core_secureCallRequiresFunction = "SecureCall requires a function as parameter"
+        core_secureCallRequiresFunction = "SecureCall requires a function as parameter",
+        core_retryRequiresFunction = "Retry requires a function as parameter"
     }
 
     -- Spanish
@@ -2400,7 +2451,8 @@ do -- Localization
         core_combatSafeFunctionError = "Error en función protegida contra combate",
         core_actionQueuedForCombat = "Acción en cola para después del combate",
         core_queuedActionFailed = "Acción en cola falló",
-        core_secureCallRequiresFunction = "SecureCall requiere una función como parámetro"
+        core_secureCallRequiresFunction = "SecureCall requiere una función como parámetro",
+        core_retryRequiresFunction = "Retry requiere una función como parámetro"
     }
 
     SAdCore.prototype.locale.esMX = SAdCore.prototype.locale.esES
@@ -2437,7 +2489,8 @@ do -- Localization
         core_combatSafeFunctionError = "Erro na função protegida contra combate",
         core_actionQueuedForCombat = "Ação enfileirada para depois do combate",
         core_queuedActionFailed = "Ação enfileirada falhou",
-        core_secureCallRequiresFunction = "SecureCall requer uma função como parâmetro"
+        core_secureCallRequiresFunction = "SecureCall requer uma função como parâmetro",
+        core_retryRequiresFunction = "Retry requer uma função como parâmetro"
     }
 
     -- French
@@ -2472,7 +2525,8 @@ do -- Localization
         core_combatSafeFunctionError = "Erreur de fonction sécurisée contre le combat",
         core_actionQueuedForCombat = "Action mise en file d'attente pour après le combat",
         core_queuedActionFailed = "Action en file d'attente échouée",
-        core_secureCallRequiresFunction = "SecureCall nécessite une fonction comme paramètre"
+        core_secureCallRequiresFunction = "SecureCall nécessite une fonction comme paramètre",
+        core_retryRequiresFunction = "Retry nécessite une fonction comme paramètre"
     }
 
     -- German
@@ -2507,7 +2561,8 @@ do -- Localization
         core_combatSafeFunctionError = "Kampfsichere Funktionsfehler",
         core_actionQueuedForCombat = "Aktion für nach dem Kampf in Warteschlange gestellt",
         core_queuedActionFailed = "Warteschlangenaktion fehlgeschlagen",
-        core_secureCallRequiresFunction = "SecureCall benötigt eine Funktion als Parameter"
+        core_secureCallRequiresFunction = "SecureCall benötigt eine Funktion als Parameter",
+        core_retryRequiresFunction = "Retry benötigt eine Funktion als Parameter"
     }
 
     -- Russian
@@ -2542,7 +2597,8 @@ do -- Localization
         core_combatSafeFunctionError = "Ошибка защищенной от боя функции",
         core_actionQueuedForCombat = "Действие поставлено в очередь после боя",
         core_queuedActionFailed = "Действие из очереди не выполнено",
-        core_secureCallRequiresFunction = "SecureCall требует функцию в качестве параметра"
+        core_secureCallRequiresFunction = "SecureCall требует функцию в качестве параметра",
+        core_retryRequiresFunction = "Retry требует функцию в качестве параметра"
     }
 
 end
