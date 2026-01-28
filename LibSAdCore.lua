@@ -1915,6 +1915,8 @@ do -- Utility Functions
         self.savedVars[panel] = self.savedVars[panel] or {}
         self.savedVars[panel][settingName] = value
 
+        self:_RefreshSettingsPanels()
+
         callHook(self, "AfterSetValue", true)
         return true
     end
