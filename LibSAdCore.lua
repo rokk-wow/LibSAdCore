@@ -516,6 +516,19 @@ do -- Registration functions
         return returnValue
     end
 
+    function addon:RegisterFrameEvent(eventName, callback)
+        local addonInstance = self
+        eventName, callback = callHook(self, "BeforeRegisterFrameEvent", eventName, callback)
+
+        EventRegistry:RegisterCallback(eventName, function(...)
+            callback(addonInstance, ...)
+        end)
+
+        local returnValue = true
+        callHook(self, "AfterRegisterFrameEvent", returnValue)
+        return returnValue
+    end
+
     function addon:RegisterSlashCommand(command, callback)
         command, callback = callHook(self, "BeforeRegisterSlashCommand", command, callback)
 

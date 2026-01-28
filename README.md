@@ -505,6 +505,28 @@ function addon:OnUnitHealth(event, unitID)
 end
 ```
 
+## Frame Event Registration
+
+Register frame events (EventRegistry callbacks) with `self:RegisterFrameEvent(eventName, callback)`. Frame events use WoW's `EventRegistry` system and are commonly used for UI-related events like Edit Mode changes, layout updates, and other frame-specific callbacks. You can identify frame events from `/etrace` because they usually have the frame name separated from the event name with a `.` dot.
+
+```lua
+function addon:Initialize()
+    self.author = "Your Name"
+    
+    -- Register frame events
+    self:RegisterFrameEvent("EditMode.Enter", self.OnEditModeEnter)
+    self:RegisterFrameEvent("EditMode.Exit", self.OnEditModeExit)
+end
+
+function addon:OnEditModeEnter()
+    self:Info("Edit mode entered")
+end
+
+function addon:OnEditModeExit()
+    self:Info("Edit mode exited")
+end
+```
+
 ## Combat-Safe Functions
 
 Some WoW API calls cannot be made during combat (e.g., modifying secure frames, changing UI positions). SAdCore provides `CombatSafe()` to automatically queue actions during combat and execute them when combat ends.
@@ -591,6 +613,7 @@ These are the most commonly used functions available on the `self` object within
 
 ### Events & Commands
 - **`self:RegisterEvent(eventName, callback)`** - Register a WoW event with a callback function
+- **`self:RegisterFrameEvent(eventName, callback)`** - Register a frame event (EventRegistry callback) with a callback function
 - **`self:RegisterSlashCommand(command, callback)`** - Register a custom slash command as a parameter to the main addon command
 
 ### Zone Detection
