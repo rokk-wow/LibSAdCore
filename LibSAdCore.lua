@@ -219,7 +219,7 @@ end
 ==============================================================================]]
 
 -- SAdCore Version
-local SADCORE_MAJOR, SADCORE_MINOR = "SAdCore-1", 18
+local SADCORE_MAJOR, SADCORE_MINOR = "SAdCore-1", 19
 
 local SAdCore, oldminor = LibStub:NewLibrary(SADCORE_MAJOR, SADCORE_MINOR)
 if not SAdCore then
@@ -1901,6 +1901,22 @@ do -- Utility Functions
                 return defaultValue
             end
         end
+    end
+
+    function addon:SetValue(panel, settingName, value)
+        panel, settingName, value = callHook(self, "BeforeSetValue", panel, settingName, value)
+
+        if not panel or not settingName then
+            callHook(self, "AfterSetValue", false)
+            return false
+        end
+
+        self.savedVars = self.savedVars or {}
+        self.savedVars[panel] = self.savedVars[panel] or {}
+        self.savedVars[panel][settingName] = value
+
+        callHook(self, "AfterSetValue", true)
+        return true
     end
 
     function addon:HexToRGB(hex)

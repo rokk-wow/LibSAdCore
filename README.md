@@ -381,6 +381,18 @@ local scale = self:GetValue("main", "uiScale") or 1.0   -- guaranteed valid numb
 local icon = self:GetValue("main", "selectIcon")        -- guaranteed valid option or nil
 ```
 
+### Setting Values with `addon:SetValue()`
+
+Use `addon:SetValue(panel, settingName, value)` to programmatically update saved variables. This ensures the panel structure is initialized and returns `true` on success.
+
+**Example:**
+```lua
+-- Set values programmatically
+self:SetValue("main", "enableFeature", true)
+self:SetValue("main", "uiScale", 1.5)
+self:SetValue("options", "selectedMode", "advanced")
+```
+
 ## Storing Custom Data
 
 Need to save data without creating UI controls? Use the reserved `self.savedVars.data` namespace. This table is automatically initialized and included in saved variables, export/import, and profile switching.
