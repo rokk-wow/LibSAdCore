@@ -577,9 +577,20 @@ Secret values are replaced with `nil`, safe values pass through unchanged. Suppo
 
 Some operations may fail temporarily and need to be retried (e.g., waiting for frames to load, API calls that return incomplete data). SAdCore provides `Retry()` to automatically retry a function until it succeeds or reaches the maximum retry limit. Retry will run the function after a short delay until the function either returns `true`, or the maximum retry count is reached.
 
-### Example
+### Syntax
 
 ```lua
+self:Retry(func, initialWait)
+```
+
+**Parameters:**
+- `func` (function) - The function to retry. Should return `true` when successful.
+- `initialWait` (number, optional) - Seconds to wait before the first attempt. If omitted or `0`, executes immediately.
+
+### Examples
+
+```lua
+-- Immediate execution (no initial wait)
 function addon:WaitForFrame()
     self:Retry(function()
         if MyFrame and MyFrame:IsShown() then
@@ -589,6 +600,17 @@ function addon:WaitForFrame()
         end
         -- Frame not ready yet, will retry
     end)
+end
+
+-- Wait 0.5 seconds before first attempt
+function addon:DelayedCheck()
+    self:Retry(function()
+        if SomeGlobalVariable then
+            -- Variable is available, proceed
+            return true
+        end
+        -- Not ready, will retry
+    end, 0.5)
 end
 ```
 
@@ -638,7 +660,7 @@ These are the most commonly used functions available on the `self` object within
 ### Combat & Safety Functions
 - **`self:CombatSafe(func)`** - Queues a function to execute after combat ends (or immediately if not in combat)
 - **`self:SecureCall(func, ...)`** - Calls a function and replaces any secret values in return values with `nil`
-- **`self:Retry(func)`** - Retries a function until it returns `true` or maximum attempts is reached
+- **`self:Retry(func, initialWait)`** - Retries a function until it returns `true` or maximum attempts is reached. `initialWait` (optional) specifies seconds to wait before the first attempt.
 
 ### Color Utilities
 - **`self:hexToRGB(hex)`** - Converts hex color string to RGB values (returns r, g, b, a)

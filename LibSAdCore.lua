@@ -1783,6 +1783,61 @@ end
 
 do -- Utility Functions
 
+    function addon:Retry(func, initialWait)
+        func, initialWait = callHook(self, "BeforeRetry", func, initialWait)
+
+        if type(func) ~= "function" then
+            self:Error(self:L("core_retryRequiresFunction"))
+            callHook(self, "AfterRetry", false)
+            return false
+        end
+
+        local addonInstance = self
+        local retryDelay = self.sadCore.config.retryDelay or 0.1
+        local retryMaxAttempts = self.sadCore.config.retryMaxAttempts or 50
+        local currentAttempt = 0
+
+        local function attemptExecution()
+            currentAttempt = currentAttempt + 1
+            
+            local success, result = pcall(func, addonInstance)
+            
+            if not success then
+                addonInstance:Debug("Retry attempt " .. currentAttempt .. " failed with error: " .. tostring(result))
+                if currentAttempt < retryMaxAttempts then
+                    C_Timer.After(retryDelay, attemptExecution)
+                else
+                    addonInstance:Debug("Retry max attempts (" .. retryMaxAttempts .. ") reached")
+                    callHook(addonInstance, "AfterRetry", false)
+                end
+                return
+            end
+
+            if result == true then
+                addonInstance:Debug("Retry succeeded on attempt " .. currentAttempt)
+                callHook(addonInstance, "AfterRetry", true)
+                return
+            end
+
+            if currentAttempt < retryMaxAttempts then
+                addonInstance:Debug("Retry attempt " .. currentAttempt .. " returned " .. tostring(result) .. ", retrying...")
+                C_Timer.After(retryDelay, attemptExecution)
+            else
+                addonInstance:Debug("Retry max attempts (" .. retryMaxAttempts .. ") reached without success")
+                callHook(addonInstance, "AfterRetry", false)
+            end
+        end
+
+        if initialWait and type(initialWait) == "number" and initialWait > 0 then
+            C_Timer.After(initialWait, attemptExecution)
+        else
+            attemptExecution()
+        end
+
+        callHook(self, "AfterRetry", true)
+        return true
+    end
+
     function addon:GetValue(panel, settingName)
         panel, settingName = callHook(self, "BeforeGetValue", panel, settingName)
 
@@ -2206,57 +2261,6 @@ do -- Combat Queue System
         local returnValue = true
         callHook(self, "AfterInitializeCombatQueue", returnValue)
         return returnValue
-    end
-
-    function addon:Retry(func)
-        func = callHook(self, "BeforeRetry", func)
-
-        if type(func) ~= "function" then
-            self:Error(self:L("core_retryRequiresFunction"))
-            callHook(self, "AfterRetry", false)
-            return false
-        end
-
-        local addonInstance = self
-        local retryDelay = self.sadCore.config.retryDelay or 0.1
-        local retryMaxAttempts = self.sadCore.config.retryMaxAttempts or 50
-        local currentAttempt = 0
-
-        local function attemptExecution()
-            currentAttempt = currentAttempt + 1
-            
-            local success, result = pcall(func, addonInstance)
-            
-            if not success then
-                addonInstance:Debug("Retry attempt " .. currentAttempt .. " failed with error: " .. tostring(result))
-                if currentAttempt < retryMaxAttempts then
-                    C_Timer.After(retryDelay, attemptExecution)
-                else
-                    addonInstance:Debug("Retry max attempts (" .. retryMaxAttempts .. ") reached")
-                    callHook(addonInstance, "AfterRetry", false)
-                end
-                return
-            end
-
-            if result == true then
-                addonInstance:Debug("Retry succeeded on attempt " .. currentAttempt)
-                callHook(addonInstance, "AfterRetry", true)
-                return
-            end
-
-            if currentAttempt < retryMaxAttempts then
-                addonInstance:Debug("Retry attempt " .. currentAttempt .. " returned " .. tostring(result) .. ", retrying...")
-                C_Timer.After(retryDelay, attemptExecution)
-            else
-                addonInstance:Debug("Retry max attempts (" .. retryMaxAttempts .. ") reached without success")
-                callHook(addonInstance, "AfterRetry", false)
-            end
-        end
-
-        attemptExecution()
-
-        callHook(self, "AfterRetry", true)
-        return true
     end
 
     function addon:CombatSafe(func)
