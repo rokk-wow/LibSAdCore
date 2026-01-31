@@ -2263,7 +2263,7 @@ do -- Release Notes
         local viewedVersion = self.savedVarsGlobal.viewedReleaseNotes[self.addonName]
 
         if currentVersion and currentVersion ~= viewedVersion then
-            self:ShowReleaseNotes()
+            self:ShowReleaseNotes(true)
             self.savedVarsGlobal.viewedReleaseNotes[self.addonName] = currentVersion
         end
 
@@ -2272,7 +2272,7 @@ do -- Release Notes
         return returnValue
     end
 
-    function addon:ShowReleaseNotes()
+    function addon:ShowReleaseNotes(delay)
         callHook(self, "BeforeShowReleaseNotes")
 
         if not self.sadCore.releaseNotes then
@@ -2286,12 +2286,22 @@ do -- Release Notes
             return false
         end
 
-        local version = self.sadCore.releaseNotes.version or "Unknown"
-        self:Info(self:L("core_releaseNotesTitle") .. " " .. version)
-        
-        for _, noteKey in ipairs(self.sadCore.releaseNotes.notes) do
-            local localizedNote = self:L(noteKey)
-            self:Info(localizedNote)
+        local function displayNotes()
+            local version = self.sadCore.releaseNotes.version or "Unknown"
+            self:Info(self:L("core_releaseNotesTitle") .. " " .. version)
+            
+            for _, noteKey in ipairs(self.sadCore.releaseNotes.notes) do
+                local localizedNote = self:L(noteKey)
+                self:Info(localizedNote)
+            end
+        end
+
+        if delay then
+            C_Timer.After(1, function()
+                displayNotes()
+            end)
+        else
+            displayNotes()
         end
 
         local returnValue = true
