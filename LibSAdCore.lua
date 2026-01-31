@@ -2263,32 +2263,12 @@ do -- Release Notes
         local viewedVersion = self.savedVarsGlobal.viewedReleaseNotes[self.addonName]
 
         if currentVersion and currentVersion ~= viewedVersion then
-            self:_DisplayReleaseNotes()
+            self:ShowReleaseNotes()
             self.savedVarsGlobal.viewedReleaseNotes[self.addonName] = currentVersion
         end
 
         local returnValue = true
         callHook(self, "AfterInitializeReleaseNotes", returnValue)
-        return returnValue
-    end
-
-    function addon:_DisplayReleaseNotes()
-        callHook(self, "BeforeDisplayReleaseNotes")
-
-        if not self.sadCore.releaseNotes or not self.sadCore.releaseNotes.notes then
-            callHook(self, "AfterDisplayReleaseNotes", false)
-            return false
-        end
-
-        local version = self.sadCore.releaseNotes.version or "Unknown"
-        
-        for _, noteKey in ipairs(self.sadCore.releaseNotes.notes) do
-            local localizedNote = self:L(noteKey)
-            self:Info(localizedNote)
-        end
-
-        local returnValue = true
-        callHook(self, "AfterDisplayReleaseNotes", returnValue)
         return returnValue
     end
 
@@ -2301,10 +2281,18 @@ do -- Release Notes
             return false
         end
 
+        if not self.sadCore.releaseNotes.notes then
+            callHook(self, "AfterShowReleaseNotes", false)
+            return false
+        end
+
         local version = self.sadCore.releaseNotes.version or "Unknown"
         self:Info(self:L("core_releaseNotesTitle") .. " " .. version)
-        self:Info(self:L("core_versionUpdated") .. " " .. version)
-        self:_DisplayReleaseNotes()
+        
+        for _, noteKey in ipairs(self.sadCore.releaseNotes.notes) do
+            local localizedNote = self:L(noteKey)
+            self:Info(localizedNote)
+        end
 
         local returnValue = true
         callHook(self, "AfterShowReleaseNotes", returnValue)
@@ -2527,9 +2515,8 @@ do -- Localization
         core_retryRequiresFunction = "Retry requires a function as parameter",
         core_releaseNotesTitle = "Release Notes for Version",
         core_noReleaseNotes = "No release notes available.",
-        core_showReleaseNotes = "Show Release Notes",
+        core_showReleaseNotes = "Release Notes",
         core_showReleaseNotesTooltip = "Display the latest release notes for this addon.",
-        core_versionUpdated = "Version updated to"
     }
 
     -- Spanish
@@ -2568,9 +2555,8 @@ do -- Localization
         core_retryRequiresFunction = "Retry requiere una función como parámetro",
         core_releaseNotesTitle = "Notas de la Versión",
         core_noReleaseNotes = "No hay notas de versión disponibles.",
-        core_showReleaseNotes = "Mostrar Notas de Versión",
+        core_showReleaseNotes = "Notas de Versión",
         core_showReleaseNotesTooltip = "Mostrar las últimas notas de versión de este addon.",
-        core_versionUpdated = "Versión actualizada a"
     }
 
     SAdCore.prototype.locale.esMX = SAdCore.prototype.locale.esES
@@ -2611,9 +2597,8 @@ do -- Localization
         core_retryRequiresFunction = "Retry requer uma função como parâmetro",
         core_releaseNotesTitle = "Notas de Versão",
         core_noReleaseNotes = "Nenhuma nota de versão disponível.",
-        core_showReleaseNotes = "Mostrar Notas de Versão",
+        core_showReleaseNotes = "Notas de Versão",
         core_showReleaseNotesTooltip = "Exibir as últimas notas de versão deste addon.",
-        core_versionUpdated = "Versão atualizada para"
     }
 
     -- French
@@ -2652,9 +2637,8 @@ do -- Localization
         core_retryRequiresFunction = "Retry nécessite une fonction comme paramètre",
         core_releaseNotesTitle = "Notes de Version pour la Version",
         core_noReleaseNotes = "Aucune note de version disponible.",
-        core_showReleaseNotes = "Afficher les Notes de Version",
+        core_showReleaseNotes = "Notes de Version",
         core_showReleaseNotesTooltip = "Afficher les dernières notes de version de cet addon.",
-        core_versionUpdated = "Version mise à jour vers"
     }
 
     -- German
@@ -2693,9 +2677,8 @@ do -- Localization
         core_retryRequiresFunction = "Retry benötigt eine Funktion als Parameter",
         core_releaseNotesTitle = "Versionshinweise für Version",
         core_noReleaseNotes = "Keine Versionshinweise verfügbar.",
-        core_showReleaseNotes = "Versionshinweise anzeigen",
+        core_showReleaseNotes = "Versionshinweise",
         core_showReleaseNotesTooltip = "Zeige die neuesten Versionshinweise für dieses Addon.",
-        core_versionUpdated = "Version aktualisiert auf"
     }
 
     -- Russian
@@ -2734,9 +2717,8 @@ do -- Localization
         core_retryRequiresFunction = "Retry требует функцию в качестве параметра",
         core_releaseNotesTitle = "Примечания к версии",
         core_noReleaseNotes = "Нет доступных примечаний к версии.",
-        core_showReleaseNotes = "Показать примечания к версии",
+        core_showReleaseNotes = "Примечания к версии",
         core_showReleaseNotesTooltip = "Показать последние примечания к версии для этого аддона.",
-        core_versionUpdated = "Версия обновлена до"
     }
 
 end
