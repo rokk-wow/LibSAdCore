@@ -697,12 +697,6 @@ do -- Settings Panels
                 self:_ExportSettings()
             end
         }, {
-            type = "button",
-            name = "core_showReleaseNotes",
-            onClick = function()
-                self:ShowReleaseNotes()
-            end
-        }, {
             type = "divider"
         }, {
             type = "description",
@@ -720,6 +714,14 @@ do -- Settings Panels
                         highlightText = true
                     }}
                 })
+            end
+        }, {
+            type = "divider"
+        }, {
+            type = "button",
+            name = "core_showReleaseNotes",
+            onClick = function()
+                self:ShowReleaseNotes()
             end
         }}
 
@@ -2290,9 +2292,11 @@ do -- Release Notes
             local version = self.sadCore.releaseNotes.version or "Unknown"
             self:Info(self:L("core_releaseNotesTitle") .. " " .. version)
             
+            local noteNumber = 1
             for _, noteKey in ipairs(self.sadCore.releaseNotes.notes) do
                 local localizedNote = self:L(noteKey)
-                self:Info(localizedNote)
+                self:Info(noteNumber .. ". " .. localizedNote)
+                noteNumber = noteNumber + 1
             end
         end
 
@@ -2730,5 +2734,4 @@ do -- Localization
         core_showReleaseNotes = "Примечания к версии",
         core_showReleaseNotesTooltip = "Показать последние примечания к версии для этого аддона.",
     }
-
 end
