@@ -6,8 +6,12 @@
 -- Thank you to all the authors and contributors who make WoW addon iteration and development possible.
 -- LibSAdCore is freely offered forward to any developer who wants to fork, branch, embed or in any way
 -- use this code for further development.
+
 local LIBSTUB_MAJOR, LIBSTUB_MINOR = "LibStub", 2
 local LibStub = _G[LIBSTUB_MAJOR]
+
+-- SAdCore Version
+local SADCORE_MAJOR, SADCORE_MINOR = "SAdCore-1", 20
 
 if not LibStub or LibStub.minor < LIBSTUB_MINOR then
     LibStub = LibStub or {
@@ -218,9 +222,6 @@ end
     SAdCore - Simple Addon Core
 ==============================================================================]]
 
--- SAdCore Version
-local SADCORE_MAJOR, SADCORE_MINOR = "SAdCore-1", 19
-
 local SAdCore, oldminor = LibStub:NewLibrary(SADCORE_MAJOR, SADCORE_MINOR)
 if not SAdCore then
     return
@@ -411,6 +412,7 @@ do -- Initialize
         self:_InitializeSettingsPanel()
 
         self:_InitializeCombatQueue()
+        self:_InitializeReleaseNotes()
 
         local returnValue = true
         callHook(self, "AfterInitialize", returnValue)
@@ -693,6 +695,12 @@ do -- Settings Panels
             name = "core_shareSettings",
             onClick = function()
                 self:_ExportSettings()
+            end
+        }, {
+            type = "button",
+            name = "core_showReleaseNotes",
+            onClick = function()
+                self:ShowReleaseNotes()
             end
         }, {
             type = "divider"
@@ -2239,6 +2247,71 @@ do -- Utility Functions
 
 end
 
+do -- Release Notes
+
+    function addon:_InitializeReleaseNotes()
+        callHook(self, "BeforeInitializeReleaseNotes")
+
+        if not self.sadCore.releaseNotes then
+            callHook(self, "AfterInitializeReleaseNotes", false)
+            return false
+        end
+
+        self.savedVarsGlobal.viewedReleaseNotes = self.savedVarsGlobal.viewedReleaseNotes or {}
+
+        local currentVersion = self.sadCore.releaseNotes.version
+        local viewedVersion = self.savedVarsGlobal.viewedReleaseNotes[self.addonName]
+
+        if currentVersion and currentVersion ~= viewedVersion then
+            self:_DisplayReleaseNotes()
+            self.savedVarsGlobal.viewedReleaseNotes[self.addonName] = currentVersion
+        end
+
+        local returnValue = true
+        callHook(self, "AfterInitializeReleaseNotes", returnValue)
+        return returnValue
+    end
+
+    function addon:_DisplayReleaseNotes()
+        callHook(self, "BeforeDisplayReleaseNotes")
+
+        if not self.sadCore.releaseNotes or not self.sadCore.releaseNotes.notes then
+            callHook(self, "AfterDisplayReleaseNotes", false)
+            return false
+        end
+
+        local version = self.sadCore.releaseNotes.version or "Unknown"
+        
+        for _, noteKey in ipairs(self.sadCore.releaseNotes.notes) do
+            local localizedNote = self:L(noteKey)
+            self:Info(localizedNote)
+        end
+
+        local returnValue = true
+        callHook(self, "AfterDisplayReleaseNotes", returnValue)
+        return returnValue
+    end
+
+    function addon:ShowReleaseNotes()
+        callHook(self, "BeforeShowReleaseNotes")
+
+        if not self.sadCore.releaseNotes then
+            self:Info(self:L("core_noReleaseNotes"))
+            callHook(self, "AfterShowReleaseNotes", false)
+            return false
+        end
+
+        local version = self.sadCore.releaseNotes.version or "Unknown"
+        self:Info(self:L("core_releaseNotesTitle") .. " " .. version)
+        self:_DisplayReleaseNotes()
+
+        local returnValue = true
+        callHook(self, "AfterShowReleaseNotes", returnValue)
+        return returnValue
+    end
+
+end
+
 do -- Combat Queue System
 
     function addon:_InitializeCombatQueue()
@@ -2451,7 +2524,11 @@ do -- Localization
         core_actionQueuedForCombat = "Action queued for after combat",
         core_queuedActionFailed = "Combat safe queued action failed",
         core_secureCallRequiresFunction = "SecureCall requires a function as parameter",
-        core_retryRequiresFunction = "Retry requires a function as parameter"
+        core_retryRequiresFunction = "Retry requires a function as parameter",
+        core_releaseNotesTitle = "Release Notes for Version",
+        core_noReleaseNotes = "No release notes available.",
+        core_showReleaseNotes = "Show Release Notes",
+        core_showReleaseNotesTooltip = "Display the latest release notes for this addon."
     }
 
     -- Spanish
@@ -2487,7 +2564,11 @@ do -- Localization
         core_actionQueuedForCombat = "Acción en cola para después del combate",
         core_queuedActionFailed = "Acción en cola falló",
         core_secureCallRequiresFunction = "SecureCall requiere una función como parámetro",
-        core_retryRequiresFunction = "Retry requiere una función como parámetro"
+        core_retryRequiresFunction = "Retry requiere una función como parámetro",
+        core_releaseNotesTitle = "Notas de la Versión",
+        core_noReleaseNotes = "No hay notas de versión disponibles.",
+        core_showReleaseNotes = "Mostrar Notas de Versión",
+        core_showReleaseNotesTooltip = "Mostrar las últimas notas de versión de este addon."
     }
 
     SAdCore.prototype.locale.esMX = SAdCore.prototype.locale.esES
@@ -2525,7 +2606,11 @@ do -- Localization
         core_actionQueuedForCombat = "Ação enfileirada para depois do combate",
         core_queuedActionFailed = "Ação enfileirada falhou",
         core_secureCallRequiresFunction = "SecureCall requer uma função como parâmetro",
-        core_retryRequiresFunction = "Retry requer uma função como parâmetro"
+        core_retryRequiresFunction = "Retry requer uma função como parâmetro",
+        core_releaseNotesTitle = "Notas de Versão",
+        core_noReleaseNotes = "Nenhuma nota de versão disponível.",
+        core_showReleaseNotes = "Mostrar Notas de Versão",
+        core_showReleaseNotesTooltip = "Exibir as últimas notas de versão deste addon."
     }
 
     -- French
@@ -2561,7 +2646,11 @@ do -- Localization
         core_actionQueuedForCombat = "Action mise en file d'attente pour après le combat",
         core_queuedActionFailed = "Action en file d'attente échouée",
         core_secureCallRequiresFunction = "SecureCall nécessite une fonction comme paramètre",
-        core_retryRequiresFunction = "Retry nécessite une fonction comme paramètre"
+        core_retryRequiresFunction = "Retry nécessite une fonction comme paramètre",
+        core_releaseNotesTitle = "Notes de Version pour la Version",
+        core_noReleaseNotes = "Aucune note de version disponible.",
+        core_showReleaseNotes = "Afficher les Notes de Version",
+        core_showReleaseNotesTooltip = "Afficher les dernières notes de version de cet addon."
     }
 
     -- German
@@ -2597,7 +2686,11 @@ do -- Localization
         core_actionQueuedForCombat = "Aktion für nach dem Kampf in Warteschlange gestellt",
         core_queuedActionFailed = "Warteschlangenaktion fehlgeschlagen",
         core_secureCallRequiresFunction = "SecureCall benötigt eine Funktion als Parameter",
-        core_retryRequiresFunction = "Retry benötigt eine Funktion als Parameter"
+        core_retryRequiresFunction = "Retry benötigt eine Funktion als Parameter",
+        core_releaseNotesTitle = "Versionshinweise für Version",
+        core_noReleaseNotes = "Keine Versionshinweise verfügbar.",
+        core_showReleaseNotes = "Versionshinweise anzeigen",
+        core_showReleaseNotesTooltip = "Zeige die neuesten Versionshinweise für dieses Addon."
     }
 
     -- Russian
@@ -2633,7 +2726,11 @@ do -- Localization
         core_actionQueuedForCombat = "Действие поставлено в очередь после боя",
         core_queuedActionFailed = "Действие из очереди не выполнено",
         core_secureCallRequiresFunction = "SecureCall требует функцию в качестве параметра",
-        core_retryRequiresFunction = "Retry требует функцию в качестве параметра"
+        core_retryRequiresFunction = "Retry требует функцию в качестве параметра",
+        core_releaseNotesTitle = "Примечания к версии",
+        core_noReleaseNotes = "Нет доступных примечаний к версии.",
+        core_showReleaseNotes = "Показать примечания к версии",
+        core_showReleaseNotesTooltip = "Показать последние примечания к версии для этого аддона."
     }
 
 end

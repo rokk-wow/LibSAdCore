@@ -442,6 +442,33 @@ addon.locale.enEN = {
 }
 ```
 
+## Release Notes
+
+Automatically display patch notes to users the first time they load after an update. Users can manually view release notes via the "Show Release Notes" button in settings.
+
+Release notes are displayed once per version using `addon:Info()`. Users won't see them again unless they reset their SavedVariables. Manually display anytime with `addon:ShowReleaseNotes()`
+
+**Example:**
+
+```lua
+-- Set version and release notes
+addon.sadCore.releaseNotes = {
+    version = "1.2.0",
+    notes = {
+        "releaseNote_feature1",
+        "releaseNote_feature2",
+        "releaseNote_bugfix1"
+    }
+}
+
+-- Add localization strings
+addon.locale.enEN = {
+    releaseNote_feature1 = "Added new feature: Advanced role selection",
+    releaseNote_feature2 = "Improved settings panel organization",
+    releaseNote_bugfix1 = "Fixed: Settings not saving on logout"
+}
+```
+
 ## Slash Commands
 
 By default, every addon automatically gets a slash command based on the addon name. For example, if your addon is named `MyAddon`, the slash command `/myaddon` is automatically registered.
