@@ -2407,7 +2407,7 @@ do -- Combat Queue System
 
             self.secretTestFrame:ClearFocus()
 
-            return isSafe and value or "SECRET_VALUE"
+            return isSafe and value or false
         end
 
         local safeRet1 = makeSafe(ret1)
