@@ -2383,9 +2383,12 @@ do -- Combat Queue System
             return false
         end
 
-        local results = table.pack(pcall(func, ...))
-        local success = table.remove(results, 1)
-        results.n = results.n - 1
+        if not self.secretTestFrame then
+            self.secretTestFrame = CreateFrame("EditBox")
+            self.secretTestFrame:Hide()
+        end
+
+        local success, ret1, ret2, ret3, ret4, ret5, ret6, ret7, ret8, ret9, ret10, ret11, ret12, ret13, ret14, ret15, ret16, ret17, ret18, ret19, ret20 = pcall(func, ...)
 
         if not success then
             callHook(self, "AfterSecureCall", nil)
@@ -2396,20 +2399,40 @@ do -- Combat Queue System
             if value == nil then
                 return nil
             end
-            
-            if issecretvalue and issecretvalue(value) then
-                return nil
-            end
-            
-            return value
+
+            local isSafe = pcall(function()
+                local str = tostring(value)
+                self.secretTestFrame:SetText(str)
+            end)
+
+            self.secretTestFrame:ClearFocus()
+
+            return isSafe and value or false
         end
 
-        for i = 1, results.n do
-            results[i] = makeSafe(results[i])
-        end
+        local safeRet1 = makeSafe(ret1)
+        local safeRet2 = makeSafe(ret2)
+        local safeRet3 = makeSafe(ret3)
+        local safeRet4 = makeSafe(ret4)
+        local safeRet5 = makeSafe(ret5)
+        local safeRet6 = makeSafe(ret6)
+        local safeRet7 = makeSafe(ret7)
+        local safeRet8 = makeSafe(ret8)
+        local safeRet9 = makeSafe(ret9)
+        local safeRet10 = makeSafe(ret10)
+        local safeRet11 = makeSafe(ret11)
+        local safeRet12 = makeSafe(ret12)
+        local safeRet13 = makeSafe(ret13)
+        local safeRet14 = makeSafe(ret14)
+        local safeRet15 = makeSafe(ret15)
+        local safeRet16 = makeSafe(ret16)
+        local safeRet17 = makeSafe(ret17)
+        local safeRet18 = makeSafe(ret18)
+        local safeRet19 = makeSafe(ret19)
+        local safeRet20 = makeSafe(ret20)
 
-        callHook(self, "AfterSecureCall", table.unpack(results, 1, results.n))
-        return table.unpack(results, 1, results.n)
+        callHook(self, "AfterSecureCall", safeRet1, safeRet2, safeRet3, safeRet4, safeRet5, safeRet6, safeRet7, safeRet8, safeRet9, safeRet10, safeRet11, safeRet12, safeRet13, safeRet14, safeRet15, safeRet16, safeRet17, safeRet18, safeRet19, safeRet20)
+        return safeRet1, safeRet2, safeRet3, safeRet4, safeRet5, safeRet6, safeRet7, safeRet8, safeRet9, safeRet10, safeRet11, safeRet12, safeRet13, safeRet14, safeRet15, safeRet16, safeRet17, safeRet18, safeRet19, safeRet20
     end
 
     function addon:_ProcessCombatQueue()
