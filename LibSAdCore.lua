@@ -545,7 +545,18 @@ do -- Registration functions
     function addon:AddSettingsPanel(panelKey, panelConfig)
         panelKey, panelConfig = callHook(self, "BeforeAddSettingsPanel", panelKey, panelConfig)
 
-        assert(panelKey ~= "main", "Cannot use AddSettingsPanel for 'main' panel. Use self.sadCore.panels.main = {...} instead.")
+        if panelKey == "main" then
+            assert(panelConfig.controls, "Main panel must have a 'controls' table.")
+            
+            self.sadCore.panels = self.sadCore.panels or {}
+            self.sadCore.panels.main = self.sadCore.panels.main or {}
+            self.sadCore.panels.main.controls = panelConfig.controls
+            
+            local returnValue = true
+            callHook(self, "AfterAddSettingsPanel", returnValue)
+            return returnValue
+        end
+
         assert(not self.sadCore.panels[panelKey], string.format("Panel '%s' already exists. Each panel key must be unique.", panelKey))
 
         self.sadCore.panels = self.sadCore.panels or {}
@@ -660,7 +671,6 @@ do -- Settings Panels
     function addon:_ConfigureMainSettings()
         callHook(self, "BeforeConfigureMainSettings")
 
-        local headerControls = {}
         local footerControls = {{
             type = "header",
             name = "core_debuggingHeader"
@@ -726,12 +736,8 @@ do -- Settings Panels
         }}
 
         local main = {}
-        main.title = (self.sadCore.panels.main and self.sadCore.panels.main.title) or self.addonName
+        main.title = self.addonName
         main.controls = {}
-
-        for _, control in ipairs(headerControls) do
-            table.insert(main.controls, control)
-        end
 
         if self.sadCore.panels.main and self.sadCore.panels.main.controls then
             for _, control in ipairs(self.sadCore.panels.main.controls) do
