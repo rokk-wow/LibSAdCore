@@ -491,7 +491,15 @@ end
 - `/myaddon hello` - Calls the `HelloCommand` function, displays "Hello, World!"
 - `/myaddon debug on` - Calls the `DebugCommand` function with parameter "on"
 
-**Note:** Command names are case-insensitive.
+**Note:** Command names are case-insensitive. To handle all slash command input yourself, register a wildcard handler using `"*"`:
+
+```lua
+self:RegisterSlashCommand("*", self.ProcessAllCommands)
+
+function addon:ProcessAllCommands(...)
+    -- Receives all parameters from /myaddon [params]
+end
+```
 
 ## Event Registration
 
