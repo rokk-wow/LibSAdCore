@@ -590,6 +590,7 @@ do -- Registration functions
         _G["SLASH_" .. slashCommandName .. "1"] = "/" .. self.addonName:lower()
         SlashCmdList[slashCommandName] = function(message)
             local command, rest = message:match("^(%S*)%s*(.-)$")
+            local originalCommand = command or ""
             command = command and command:lower() or ""
 
             if command ~= "" and addonInstance.slashCommands[command] then
@@ -602,8 +603,8 @@ do -- Registration functions
                 addonInstance.slashCommands[command](addonInstance, unpack(params))
             elseif addonInstance.slashCommands["*"] then
                 local params = {}
-                if command ~= "" then
-                    table.insert(params, command)
+                if originalCommand ~= "" then
+                    table.insert(params, originalCommand)
                 end
                 if rest and rest ~= "" then
                     for param in rest:gmatch("%S+") do
