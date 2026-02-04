@@ -1401,9 +1401,7 @@ do -- Controls
                 if value == nil then
                     value = defaultValue
                 end
-                print("[ColorPicker REFRESH] panelKey=" .. tostring(panelKey) .. ", name=" .. tostring(name) .. ", hex=" .. tostring(value))
                 local r, g, b, a = self:HexToRGB(value)
-                print("[ColorPicker REFRESH] RGBA: r=" .. tostring(r) .. ", g=" .. tostring(g) .. ", b=" .. tostring(b) .. ", a=" .. tostring(a))
                 colorPicker.ColorSwatch.Color:SetColorTexture(r, g, b, a)
             end
         end
