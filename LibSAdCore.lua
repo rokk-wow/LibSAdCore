@@ -11,7 +11,7 @@ local LIBSTUB_MAJOR, LIBSTUB_MINOR = "LibStub", 2
 local LibStub = _G[LIBSTUB_MAJOR]
 
 -- SAdCore Version
-local SADCORE_MAJOR, SADCORE_MINOR = "SAdCore-1", 22
+local SADCORE_MAJOR, SADCORE_MINOR = "SAdCore-1", 23
 
 if not LibStub or LibStub.minor < LIBSTUB_MINOR then
     LibStub = LibStub or {
@@ -600,6 +600,17 @@ do -- Registration functions
                     end
                 end
                 addonInstance.slashCommands[command](addonInstance, unpack(params))
+            elseif addonInstance.slashCommands["*"] then
+                local params = {}
+                if command ~= "" then
+                    table.insert(params, command)
+                end
+                if rest and rest ~= "" then
+                    for param in rest:gmatch("%S+") do
+                        table.insert(params, param)
+                    end
+                end
+                addonInstance.slashCommands["*"](addonInstance, unpack(params))
             else
                 addonInstance:OpenSettings()
             end
