@@ -700,9 +700,6 @@ do -- Settings Panels
             type = "divider"
         }, {
             type = "description",
-            name = "core_tagline"
-        }, {
-            type = "description",
             name = "author",
             onClick = function()
                 self:_ShowDialog({
