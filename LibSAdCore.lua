@@ -11,7 +11,7 @@ local LIBSTUB_MAJOR, LIBSTUB_MINOR = "LibStub", 2
 local LibStub = _G[LIBSTUB_MAJOR]
 
 -- SAdCore Version
-local SADCORE_MAJOR, SADCORE_MINOR = "SAdCore-1", 25
+local SADCORE_MAJOR, SADCORE_MINOR = "SAdCore-1", 26
 
 if not LibStub or LibStub.minor < LIBSTUB_MINOR then
     LibStub = LibStub or {
@@ -1408,7 +1408,7 @@ do -- Controls
         if tooltipText ~= "[" .. tooltipKey .. "]" then
             colorPicker.ColorSwatch:SetScript("OnEnter", function(self)
                 GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-                GameTooltip:SetText(self:L(name), 1, 1, 1)
+                GameTooltip:SetText(addonInstance:L(name), 1, 1, 1)
                 GameTooltip:AddLine(tooltipText, nil, nil, nil, true)
                 GameTooltip:Show()
             end)
